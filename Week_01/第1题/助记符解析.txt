@@ -1,0 +1,107 @@
+Classfile /D:/WorkSpaceIdea/geek-school/java-advanced/target/classes/calculation/ShowLocalVariableTest.class
+  Last modified 2020-10-18; size 704 bytes
+  MD5 checksum 3a23a37e5f0bc302466bebc57effa7a0
+  Compiled from "ShowLocalVariableTest.java"
+public class calculation.ShowLocalVariableTest
+  minor version: 0
+  major version: 52                                                                            -- JDK8 版本号
+  flags: ACC_PUBLIC, ACC_SUPER                                                                 -- 表示访问权限
+Constant pool:                                                                                 -- 常量池
+   #1 = Methodref          #7.#29         // java/lang/Object."<init>":()V
+   #2 = Class              #30            // calculation/MovingAverage
+   #3 = Methodref          #2.#29         // calculation/MovingAverage."<init>":()V
+   #4 = Methodref          #2.#31         // calculation/MovingAverage.submit:(D)V
+   #5 = Methodref          #2.#32         // calculation/MovingAverage.getAvg:()D
+   #6 = Class              #33            // calculation/ShowLocalVariableTest
+   #7 = Class              #34            // java/lang/Object
+   #8 = Utf8               <init>
+   #9 = Utf8               ()V
+  #10 = Utf8               Code
+  #11 = Utf8               LineNumberTable
+  #12 = Utf8               LocalVariableTable
+  #13 = Utf8               this
+  #14 = Utf8               Lcalculation/ShowLocalVariableTest;
+  #15 = Utf8               main
+  #16 = Utf8               ([Ljava/lang/String;)V
+  #17 = Utf8               index
+  #18 = Utf8               I
+  #19 = Utf8               args
+  #20 = Utf8               [Ljava/lang/String;
+  #21 = Utf8               movingAverage
+  #22 = Utf8               Lcalculation/MovingAverage;
+  #23 = Utf8               avg
+  #24 = Utf8               D
+  #25 = Utf8               StackMapTable
+  #26 = Class              #30            // calculation/MovingAverage
+  #27 = Utf8               SourceFile
+  #28 = Utf8               ShowLocalVariableTest.java
+  #29 = NameAndType        #8:#9          // "<init>":()V
+  #30 = Utf8               calculation/MovingAverage
+  #31 = NameAndType        #35:#36        // submit:(D)V
+  #32 = NameAndType        #37:#38        // getAvg:()D
+  #33 = Utf8               calculation/ShowLocalVariableTest
+  #34 = Utf8               java/lang/Object
+  #35 = Utf8               submit
+  #36 = Utf8               (D)V
+  #37 = Utf8               getAvg
+  #38 = Utf8               ()D
+{
+  public calculation.ShowLocalVariableTest();
+    descriptor: ()V
+    flags: ACC_PUBLIC                                                                           -- 标示访问权限
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0                                                                             -- 将本地变量表位置0的对象 压入栈中
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 9: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lcalculation/ShowLocalVariableTest;
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V                                                          -- 表示该成员变量是String类型
+    flags: ACC_PUBLIC, ACC_STATIC                                                               -- 标示访问权限
+    Code:
+      stack=3, locals=4, args_size=1
+         0: new           #2                  // class calculation/MovingAverage                -- new
+         3: dup                                                                                 -- duplicate复制，将栈顶元素复制一份并再次压入栈顶
+         4: invokespecial #3                  // Method calculation/MovingAverage."<init>":()V  -- 调用MovingAverage的构造函数
+         7: astore_1                                                                            -- 操作数栈中弹出MovingAverage对象引用 写入本地变量表位置1
+         8: iconst_1                                                                            -- 栈中计算for循环内的index = 1
+         9: istore_2                                                                            -- 操作数栈中弹出 index = 1 写入本地变量表位置2
+        10: iload_2                                                                             -- 将本地变量表中的位置2的index = 1 压入栈中 , 如果第二次循环就会将iinc重新压入栈中
+        11: iconst_3                                                                            -- 栈中计算for循环条件最大值 3
+        12: if_icmpge     27                                                                    -- for循环中判断index是否超出范围,如果超出范围跳转标号27 aload_1
+        15: aload_1                                                                             -- 将本地变量表位置1的对象 压入栈中
+        16: iload_2                                                                             -- 将本地变量表位置2的index 压入栈中
+        17: i2d                                                                                 -- MovingAverage中avg方法返回值int转换成double
+        18: invokevirtual #4                  // Method calculation/MovingAverage.submit:(D)V   -- 调用movingAverage中的submit()实例方法
+        21: iinc          2, 1                                                                  -- 将局部变量做自增操作,[2,1] 第1个标示局部变量表的位置,第2个位累加数. 也就是说本地标量表中位置2(index = 1) 累加 1
+        24: goto          10                                                                    -- for每次循环结束的跳转标号10 iload_2
+        27: aload_1                                                                             -- 将本地变量表位置1的对象 压入栈中
+        28: invokevirtual #5                  // Method calculation/MovingAverage.getAvg:()D    -- 调用movingAverage中的getAvg()实例方法
+        31: dstore_2                                                                            -- 操作数栈中弹出 getAvg()返回值avg 写入本地变量表位置2
+        32: return                                                                              -- 结束
+      LineNumberTable:
+        line 13: 0
+        line 15: 8
+        line 16: 15
+        line 15: 21
+        line 19: 27
+        line 20: 32
+      LocalVariableTable:                                                                        -- 本地变量表
+        Start  Length  Slot  Name   Signature
+           10      17     2 index   I
+            0      33     0  args   [Ljava/lang/String;
+            8      25     1 movingAverage   Lcalculation/MovingAverage;
+           32       1     2   avg   D
+      StackMapTable: number_of_entries = 2
+        frame_type = 253 /* append */
+          offset_delta = 10
+          locals = [ class calculation/MovingAverage, int ]
+        frame_type = 250 /* chop */
+          offset_delta = 16
+}
+SourceFile: "ShowLocalVariableTest.java"
