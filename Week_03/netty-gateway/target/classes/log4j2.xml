@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration monitorinterval="10">
+    <!--线上环境 cicd-->
+    <properties>
+        <property name="LOG_HOME">D:/app-logs/</property>
+        <property name="projectName">netty-gateway</property>
+    </properties>
+    <!--输出源-->
+    <Appenders>
+        <!--输出到控制台-->
+        <Console name="STDOUT" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss sss} %-5p %t %l(%r) %m%n"/>
+            <ThresholdFilter level="info"/>
+        </Console>
+        <!--输出到文件-->
+        <RollingFile name="RollingFileDebug" fileName="${LOG_HOME}/${projectName}/${projectName}.111.log"
+                     filePattern="${LOG_HOME}/${projectName}/${projectName}.log.%d{yyyy-MM-dd HH}h">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss sss} %-5p %t %l %m%n "/>
+            <ThresholdFilter level="DEBUG"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="24"/>
+            </Policies>
+            <!--按照时间间隔切割文件，切割间隔为 interval 1h-->
+            <!--<TimeBasedTriggeringPolicy modulate="true" interval="1" />-->
+            <!--按照文件大小切割文件，切割跨度为3KB ，单位还可以为MB,GB，TB-->
+            <!--<SizeBasedTriggeringPolicy size="3KB" />-->
+            <!--同一时刻只允许存在10个文件-->
+            <!--<DefaultRolloverStrategy max="10"/>-->
+        </RollingFile>
+
+        <RollingFile name="RollingFileError" fileName="${LOG_HOME}/${projectName}/${projectName}.log"
+                     filePattern="${LOG_HOME}/${projectName}/${projectName}.log.%d{yyyy-MM-dd hh-mm}">
+            <ThresholdFilter level="ERROR"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss sss} %-5p %t %l(%r) %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+            </Policies>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <!--过滤spring跟mmybatis的繁多的DEBUG信息-->
+        <!--        <logger name="org.springframework" level="INFO" />-->
+        <!--        <logger name="org.mybatis" level="INFO" />-->
+        <root level="DEBUG">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="RollingFileDebug"/>
+            <appender-ref ref="RollingFileError"/>
+        </root>
+
+    </Loggers>
+
+</Configuration>
