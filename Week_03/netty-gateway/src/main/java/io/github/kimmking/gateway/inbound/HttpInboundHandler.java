@@ -48,7 +48,6 @@ public class HttpInboundHandler extends ChannelInboundHandlerAdapter {
                 handlerTest(fullRequest, ctx);
             }*/
 
-            // KimmKing:
             handler.handle(fullRequest, ctx);
 
         } catch (Exception e) {

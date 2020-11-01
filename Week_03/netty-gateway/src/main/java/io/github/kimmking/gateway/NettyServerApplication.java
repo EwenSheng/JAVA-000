@@ -28,11 +28,15 @@ public class NettyServerApplication {
 
         int port = Integer.parseInt(proxyPort);
 
-        logger.info("{} {} starting...", GATEWAY_NAME, GATEWAY_VERSION);
+        /*logger.info("{} {} starting...", GATEWAY_NAME, GATEWAY_VERSION);*/
+
+        System.out.println(GATEWAY_NAME + GATEWAY_VERSION + "starting...");
 
         HttpInboundServer server = new HttpInboundServer(port, proxyServer);
 
-        logger.info("{} {} started at http://localhost:{} for server:{}", GATEWAY_NAME, GATEWAY_VERSION, port, proxyServer);
+        /*logger.info("{} {} started at http://localhost:{} for server:{}", GATEWAY_NAME, GATEWAY_VERSION, port, proxyServer);*/
+
+        System.out.println(GATEWAY_NAME + GATEWAY_VERSION + "started at http://localhost:" + port + " for server:" + proxyServer);
 
         try {
             server.run();

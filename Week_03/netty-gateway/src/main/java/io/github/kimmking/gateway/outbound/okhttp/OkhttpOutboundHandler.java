@@ -75,7 +75,7 @@ public class OkhttpOutboundHandler {
 
                     @Override
                     public void onResponse(Call call, Response response) {
-                        handleResponse(inbound, ctx, call.request(), response);
+                        handleResponse(inbound, ctx, response);
                     }
                 });
     }
@@ -90,12 +90,12 @@ public class OkhttpOutboundHandler {
      */
     private void handleResponse(final FullHttpRequest fullRequest,
                                 final ChannelHandlerContext ctx,
-                                final Request request,
                                 final Response endPointResponse) {
 
         FullHttpResponse response = null;
 
         try {
+
             response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(endPointResponse.body().bytes()));
 
             response.headers().
