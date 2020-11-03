@@ -60,6 +60,12 @@
             <version>3.14.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.14</version>
+        </dependency>
+
         <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
