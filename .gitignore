@@ -7,3 +7,9 @@
 *.iml
 out
 gen
+/Week_03/boot-demo/HELP.md
+/Week_03/boot-demo/mvnw
+/Week_03/boot-demo/mvnw.cmd
+/Week_03/boot-demo/.mvn/
+
+Week_03/boot-demo/target/
