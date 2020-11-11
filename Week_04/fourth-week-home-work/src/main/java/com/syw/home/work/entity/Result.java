@@ -1,5 +1,6 @@
 package com.syw.home.work.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -9,7 +10,11 @@ import lombok.Data;
  * @description:
  */
 @Data
+@AllArgsConstructor
 public class Result {
+
+    public Result() {
+    }
 
     private String message;
 }
