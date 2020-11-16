@@ -2,8 +2,8 @@ package org.home.work.config;
 
 import org.home.work.entity.JobInfo;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * @author: Ewen
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @description:
  */
 @Configuration
-@ComponentScan("org.home.work.*")
+@EnableAspectJAutoProxy
 public class BeanConfig {
 
 

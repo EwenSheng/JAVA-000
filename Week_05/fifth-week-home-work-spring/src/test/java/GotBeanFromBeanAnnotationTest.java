@@ -11,8 +11,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @program: JAVA-000
  * @date: 2020/11/15 20:59
  * @description:
- * # 自动装配bean , Autowired + Bean
- * # 使用 @Bean 注解将方法返回的实例对象添加到上下文中
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = BeanConfig.class)

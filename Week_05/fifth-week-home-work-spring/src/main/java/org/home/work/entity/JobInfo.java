@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class JobInfo {
 
-    private Integer workAge = 8;
+    private Integer workAge = 3;
 
     private String job = "Java engineer";
 }

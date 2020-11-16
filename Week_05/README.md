@@ -1,24 +1,68 @@
 Week05 作业题目（周四）：
 
-1.（必做）写代码实现 Spring Bean 的装配，方式越多越好（XML、Annotation 都可以）, 提交到 Github。
+1.（必做）写代码实现 Spring Bean 的装配，方式越多越好（XML、Annotation 都可以）, 提交到 Github。=> 已完成
 
 ~~~
 -- Xml方式
-GotBeanFormApplicationContextXml
+org.home.work.GotBeanFormApplicationContextXml
 通过applicationContext的 <bean>标签显式装配bean
 
--- Annotation方式
+-- Java Bean方式
+org.home.work.GotBeanFormScanPackageBeanConfig
 GotBeanFromAnnotationTest 
-自动装配bean , 通过ComponentScan配置扫包 使用@Service添加到Spring容器中，通过@Autowired获取Bean
+自动装配bean , 通过ComponentScan配置自动扫包 使用@Service添加到Spring容器中，通过@Autowired获取Bean
 
+-- 自动装配Bean方式
+org.home.work.GotBeanFormBeanConfig
 GotBeanFromBeanAnnotationTest
-使用 @Bean 注解将方法返回的实例对象添加到Spring容器中
+使用 Java Config注解 @bean
 
 ~~~
 
+2.（选做）使 Java 里的动态代理，实现一个简单的 AOP。 => 已完成
 
-2.（选做）使 Java 里的动态代理，实现一个简单的 AOP。
-3.（选做）实现一个 Spring XML 自定义配置，配置一组 Bean，例如：Student/Klass/School。
+~~~
+Aop实现有2种方法
+1. Xml 借鉴老师的写法 通过Aop标签实现
+2. 通过Annotation方式 实现了 AopConfig
+
+ * 1、标准写法
+ * 权限修饰符 返回值类型 包名.包名.包名..包名.类名.方法名(参数)
+ * 
+ * 2、省略权限修饰符
+ * 返回值类型 包名.包名.包名..包名.类名.方法名(参数)
+ * 
+ * 3、返回值可使用通配符代替，表示任意类型
+ * * 包名.包名.包名..包名.类名.方法名(参数)
+ * 
+ * 4、包名可使用通配符表示任意包名
+ * 1）* *.*.*.*.类名.方法名(参数)
+ * 2）* *..*.类名.方法名(参数)
+ * 
+ * 5、参数列表
+ * 基本类型直接写名称 int
+ * 引用类型写包名.类名形式 java.lang.String
+ * 使用通配符*表示有参数
+ * 使用..表示有无参数均可
+ * 
+ * 6、全通配
+ * * *..*.*.*(..)
+
+先定义切点
+然后定义切入点 , Before() -- 方法执行之前 / After() -- 方法执行之后 / Around() -- 环绕
+
+切面顺序
+1. around
+2. begin
+3. around
+4. after
+
+~~~
+
+3.（选做）实现一个 Spring XML 自定义配置，配置一组 Bean，例如：Student/Klass/School。 => 已完成
+
+org.home.work.GotBeanFormBeanConfig
+
 
 4.（选做，会添加到高手附加题）
 4.1 （挑战）讲网关的 frontend/backend/filter/router 线程池都改造成 Spring 配置方式；
