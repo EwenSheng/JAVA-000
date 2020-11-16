@@ -1,14 +1,16 @@
-package com.home.work.config;
+package org.home.work.config;
 
-import com.home.work.config.properties.School;
-import com.home.work.config.service.SchoolService;
+import org.home.work.service.SchoolService;
+import org.home.work.entity.School;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author: Ewen
@@ -31,7 +33,6 @@ public class HomeWorkAutoConfigure {
     private School school;
 
 
-
     /***
      * 注解Bean 实例化一个 bean;
      *
@@ -46,7 +47,10 @@ public class HomeWorkAutoConfigure {
     @ConditionalOnMissingBean(SchoolService.class)
     @ConditionalOnProperty(prefix = "school.service", value = "enabled", havingValue = "true")
     SchoolService schoolService() {
-        return new SchoolService(school);
+
+        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:BeanConfig.xml");
+
+        return new SchoolService(context.getBean(School.class));
     }
 
 }

@@ -1,6 +1,6 @@
 package org.home.work.controller;
 
-import com.home.work.config.service.SchoolService;
+import org.home.work.service.SchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +20,10 @@ public class DemoController {
     private SchoolService schoolService;
 
     @GetMapping(value = "/print")
-    public void print() {
+    public String print() {
 
         schoolService.doIt();
-    }
 
+        return "success";
+    }
 }

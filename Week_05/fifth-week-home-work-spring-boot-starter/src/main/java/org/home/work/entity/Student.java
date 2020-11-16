@@ -1,4 +1,4 @@
-package com.home.work.config.properties;
+package org.home.work.entity;
 
 
 import lombok.AllArgsConstructor;

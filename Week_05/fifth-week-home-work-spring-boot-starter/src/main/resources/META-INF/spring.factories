@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.home.work.config.HomeWorkAutoConfigure
+  org.home.work.config.HomeWorkAutoConfigure
