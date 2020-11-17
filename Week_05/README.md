@@ -379,3 +379,37 @@ AccountDO(accountName=2016中秋节同步, password=57fff0ea55146baa6ac1a9999dfc
 ~~~
 
 #### 5.3 配置 Hikari 连接池，改进上述操作
+
+1. 引用Hikari的jar
+~~~
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikaricp.version}</version>
+        </dependency>
+~~~
+2. 注入Hikari的DataSourceConfig
+~~~
+    @Bean
+    @ConfigurationProperties("spring.datasource.hikari")
+    public DataSource dataSource() {
+        return new HikariDataSource();
+    }
+~~~
+3. 同步修改获取连接的方式
+~~~
+    @Bean
+    public Connection connection() throws SQLException {
+
+        /*HikariDataSource dataSource = new HikariDataSource();*/
+
+        Connection connection = dataSource.getConnection();
+
+        return connection;
+    }
+~~~
+4. 启动应用,监控到Hikari日志打印,测试ok
+~~~
+2020-11-17 21:16:50.893  INFO 24612 --- [           main] com.zaxxer.hikari.HikariDataSource       : SYW_HikariCP - Starting...
+2020-11-17 21:16:51.345  INFO 24612 --- [           main] com.zaxxer.hikari.HikariDataSource       : SYW_HikariCP - Start completed.
+~~~

@@ -1,10 +1,11 @@
 package org.home.work.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
@@ -23,12 +24,25 @@ public class OriginalJdbcConfiguration {
      * 2：驱动只会加载一次，不需要依赖具体的驱动，灵活性高
      *
      */
-    @Bean
+    /*@Bean
     public Connection connection() throws ClassNotFoundException, SQLException {
 
         Class.forName("com.mysql.jdbc.Driver");
 
         Connection connection = DriverManager.getConnection("jdbc:mysql://47.102.152.243:3306/syw_jdbc_demo", "root", "Dv8,zia13vvKqdly");
+
+        return connection;
+    }*/
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Bean
+    public Connection connection() throws SQLException {
+
+        /*HikariDataSource dataSource = new HikariDataSource();*/
+
+        Connection connection = dataSource.getConnection();
 
         return connection;
     }

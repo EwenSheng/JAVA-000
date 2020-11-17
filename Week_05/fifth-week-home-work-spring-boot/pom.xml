@@ -28,9 +28,11 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <hikaricp.version>2.7.2</hikaricp.version>
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -46,8 +48,10 @@
             <groupId>com.home.work</groupId>
             <artifactId>fifth-week-home-work-spring-boot-starter</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-           <!-- <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/local/jar/fifth-week-home-work-spring-boot-starter-0.0.1-SNAPSHOT.jar</systemPath>-->
+           <!--
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/local/jar/fifth-week-home-work-spring-boot-starter-0.0.1-SNAPSHOT.jar</systemPath>
+           -->
         </dependency>
 
         <dependency>
@@ -59,6 +63,12 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikaricp.version}</version>
         </dependency>
 
     </dependencies>
