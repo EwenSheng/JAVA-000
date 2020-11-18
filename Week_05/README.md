@@ -17,9 +17,9 @@
 
 ###（周六）：
 
-1.（必做）给前面课程提供的 Student/Klass/School 实现自动配置和 Starter。
+1.（必做）给前面课程提供的 Student/Klass/School 实现自动配置和 Starter。 => 已完成
 
-2.（必做）研究一下 JDBC 接口和数据库连接池，掌握它们的设计和用法：
+2.（必做）研究一下 JDBC 接口和数据库连接池，掌握它们的设计和用法： => 已完成
 
 1）使用 JDBC 原生接口，实现数据库的增删改查操作。
 2）使用事务，PrepareStatement 方式，批处理方式，改进上述操作。
@@ -66,14 +66,14 @@ Google Chrome
 ### 1.通过3种方式实现Bean装配
 
 -- Xml方式
-作业地址：
+作业地址：https://github.com/EwenSheng/JAVA-000/blob/main/Week_05/fifth-week-home-work-spring/src/main/java/org/home/work/GotBeanFormApplicationContextXml.java
 ~~~
 org.home.work.GotBeanFormApplicationContextXml
 通过applicationContext的 <bean>标签显式装配bean
 ~~~
 
 -- Java Bean方式
-作业地址：
+作业地址：https://github.com/EwenSheng/JAVA-000/blob/main/Week_05/fifth-week-home-work-spring/src/main/java/org/home/work/GotBeanFormScanPackageBeanConfig.java
 ~~~
 org.home.work.GotBeanFormScanPackageBeanConfig
 GotBeanFromAnnotationTest 
@@ -81,7 +81,7 @@ GotBeanFromAnnotationTest
 ~~~
 
 -- 自动装配Bean方式
-作业地址：
+作业地址：https://github.com/EwenSheng/JAVA-000/blob/main/Week_05/fifth-week-home-work-spring/src/main/java/org/home/work/GotBeanFormBeanConfig
 ~~~
 org.home.work.GotBeanFormBeanConfig
 GotBeanFromBeanAnnotationTest
@@ -92,7 +92,7 @@ GotBeanFromBeanAnnotationTest
 
 
 Aop实现有2种方法(xml , 通过Annotation方式)
-作业地址：
+作业地址：https://github.com/EwenSheng/JAVA-000/tree/main/Week_05/fifth-week-home-work-spring/src/main/java/org/home/work/config
 ~~~
 1. 本次作业通过Annotation方式 实现了 AopConfig
     先定义切点
@@ -134,7 +134,7 @@ Aop实现有2种方法(xml , 通过Annotation方式)
 
 ### 3. 通过Spring XML 自定义配置，配置一组 Bean，例如：Student/Klass/School
 
-作业地址：
+作业地址：https://github.com/EwenSheng/JAVA-000/tree/main/Week_05/fifth-week-home-work-spring/src/main/java/org/home/work/config
 ~~~
 1. 定义了BeanConfig
 
@@ -183,6 +183,8 @@ Aop实现有2种方法(xml , 通过Annotation方式)
 ### 4. 给前面课程提供的 Student/Klass/School 实现自动配置和 Starter。
 
 作业地址：
+https://github.com/EwenSheng/JAVA-000/tree/main/Week_05/fifth-week-home-work-spring-boot
+https://github.com/EwenSheng/JAVA-000/tree/main/Week_05/fifth-week-home-work-spring-boot-starter
 ~~~
 1. 构建Starter项目：fifth-week-home-work-spring-boot-starter
 了解了下Starter会使用到一些注解
@@ -232,7 +234,7 @@ public class DemoController {
 
 ### 5. 研究一下 JDBC 接口和数据库连接池，掌握它们的设计和用法
 作业地址：
-
+https://github.com/EwenSheng/JAVA-000/tree/main/Week_05/fifth-week-home-work-spring-boot
 ~~~
 1. DriverManager：驱动管理对象
 			* 功能：
