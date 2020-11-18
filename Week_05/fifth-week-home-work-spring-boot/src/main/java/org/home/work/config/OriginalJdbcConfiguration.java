@@ -29,7 +29,7 @@ public class OriginalJdbcConfiguration {
 
         Class.forName("com.mysql.jdbc.Driver");
 
-        Connection connection = DriverManager.getConnection("jdbc:mysql://47.102.152.243:3306/syw_jdbc_demo", "root", "Dv8,zia13vvKqdly");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/syw_jdbc_demo", "root", "root");
 
         return connection;
     }*/
