@@ -71,10 +71,6 @@ public class DataSourceConfig {
 
     @Bean
     public SqlSessionFactory sessionFactory(@Qualifier("dynamicDb") DataSource dynamicDataSource) throws Exception {
-        /*SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*Mapper.xml"));
-        bean.setDataSource(dynamicDataSource);
-        return bean.getObject();*/
         MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(dynamicDataSource);
         sqlSessionFactory.setTypeAliasesPackage("com.aop.auto.data.source.dao.model");

@@ -196,3 +196,81 @@ stop slave;
 ~~~
 
 ### （必做）读写分离 - 数据库框架版本 2.0
+
+#### 文档支持
+ShardingSphere-JDBC: https://shardingsphere.apache.org/document/legacy/4.x/document/cn/manual/sharding-jdbc/usage/read-write-splitting/
+
+#### 使用
+
+为了使用shardingsphere变更了如下jar
+1. 很费解的是,我使用其他版本druid就无法启动,注入DataSource异常--待处理
+~~~
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-jdbc-spring-namespace</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.22</version>
+        </dependency>
+~~~
+
+~~~
+2020-12-06 01:23:57.184  INFO 292 --- [           main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2020-12-06 01:23:57.330  INFO 292 --- [           main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-2} inited
+2020-12-06 01:23:57.373  INFO 292 --- [           main] o.a.s.core.log.ConfigurationLogger       : MasterSlaveRuleConfiguration:
+loadBalanceAlgorithmType: round_robin
+masterDataSourceName: primary
+name: ms
+slaveDataSourceNames:
+- secondary
+
+2020-12-06 01:23:57.374  INFO 292 --- [           main] o.a.s.core.log.ConfigurationLogger       : Properties:
+sql.show: 'true'
+
+2020-12-06 01:23:57.396  INFO 292 --- [           main] ShardingSphere-metadata                  : Loading 1 tables' meta data.
+2020-12-06 01:23:57.432  INFO 292 --- [           main] ShardingSphere-metadata                  : Meta data load finished, cost 58 milliseconds.
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.1.1 
+2020-12-06 01:23:57.788  INFO 292 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-12-06 01:23:57.974  INFO 292 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8702 (http) with context path ''
+2020-12-06 01:23:57.983  INFO 292 --- [           main] c.m.d.s.MultipleDataSourceApplication    : Started MultipleDataSourceApplication in 3.154 seconds (JVM running for 3.99)
+2020-12-06 01:24:26.558  INFO 292 --- [nio-8702-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-12-06 01:24:26.558  INFO 292 --- [nio-8702-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-12-06 01:24:26.559  INFO 292 --- [nio-8702-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2020-12-06 01:24:27.070  INFO 292 --- [nio-8702-exec-2] ShardingSphere-SQL                       : Logic SQL: SELECT  id,name,age  FROM user
+2020-12-06 01:24:27.070  INFO 292 --- [nio-8702-exec-2] ShardingSphere-SQL                       : SQLStatement: SelectStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.SelectStatement@3bcb19fd, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@669040d2), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@669040d2, projectionsContext=ProjectionsContext(startIndex=8, stopIndex=18, distinctRow=false, projections=[ColumnProjection(owner=null, name=id, alias=Optional.empty), ColumnProjection(owner=null, name=name, alias=Optional.empty), ColumnProjection(owner=null, name=age, alias=Optional.empty)]), groupByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.groupby.GroupByContext@3883497e, orderByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.orderby.OrderByContext@39ba82fa, paginationContext=org.apache.shardingsphere.sql.parser.binder.segment.select.pagination.PaginationContext@5add60c1, containsSubquery=false)
+2020-12-06 01:24:27.070  INFO 292 --- [nio-8702-exec-2] ShardingSphere-SQL                       : Actual SQL: secondary ::: SELECT  id,name,age  FROM user
+ Time：8 ms - ID：com.multiple.data.source.dao.mapper.UserMapper.selectList
+Execute SQL：org.apache.shardingsphere.shardingjdbc.jdbc.core.statement.MasterSlavePreparedStatement@4d3bb3c
+
+2020-12-06 01:24:40.155  INFO 292 --- [nio-8702-exec-3] ShardingSphere-SQL                       : Logic SQL: UPDATE user  SET name=?,
+age=?  WHERE id=?
+2020-12-06 01:24:40.155  INFO 292 --- [nio-8702-exec-3] ShardingSphere-SQL                       : SQLStatement: UpdateStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.UpdateStatement@5008160a, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@79054b17), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@79054b17)
+2020-12-06 01:24:40.155  INFO 292 --- [nio-8702-exec-3] ShardingSphere-SQL                       : Actual SQL: primary ::: UPDATE user  SET name=?,
+age=?  WHERE id=?
+ Time：12 ms - ID：com.multiple.data.source.dao.mapper.UserMapper.updateById
+Execute SQL：org.apache.shardingsphere.shardingjdbc.jdbc.core.statement.MasterSlavePreparedStatement@20c7b7f9
+
+2020-12-06 01:25:07.894  INFO 292 --- [nio-8702-exec-4] ShardingSphere-SQL                       : Logic SQL: SELECT  id,name,age  FROM user
+2020-12-06 01:25:07.894  INFO 292 --- [nio-8702-exec-4] ShardingSphere-SQL                       : SQLStatement: SelectStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.SelectStatement@3bcb19fd, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@a35a9e5), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@a35a9e5, projectionsContext=ProjectionsContext(startIndex=8, stopIndex=18, distinctRow=false, projections=[ColumnProjection(owner=null, name=id, alias=Optional.empty), ColumnProjection(owner=null, name=name, alias=Optional.empty), ColumnProjection(owner=null, name=age, alias=Optional.empty)]), groupByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.groupby.GroupByContext@4f246d3, orderByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.orderby.OrderByContext@cdc295, paginationContext=org.apache.shardingsphere.sql.parser.binder.segment.select.pagination.PaginationContext@45cf4ce8, containsSubquery=false)
+2020-12-06 01:25:07.894  INFO 292 --- [nio-8702-exec-4] ShardingSphere-SQL                       : Actual SQL: secondary ::: SELECT  id,name,age  FROM user
+ Time：4 ms - ID：com.multiple.data.source.dao.mapper.UserMapper.selectList
+Execute SQL：org.apache.shardingsphere.shardingjdbc.jdbc.core.statement.MasterSlavePreparedStatement@74c0a96a
+~~~
