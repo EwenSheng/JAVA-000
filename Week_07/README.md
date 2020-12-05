@@ -181,7 +181,7 @@ stop slave;
 使用这两个命令 stop slave; reset master;
 ~~~
 
-#### 使用
+#### 使用: https://github.com/EwenSheng/JAVA-000/tree/main/Week_07/aop-auto-data-source
 
 ~~~
 21:42:41.963 aop-auto-data-source [http-nio-8701-exec-1] INFO  c.a.a.d.s.aop.DataSourceContextAop - ========>>>>> 数据源切换至：master
@@ -200,7 +200,7 @@ stop slave;
 #### 文档支持
 ShardingSphere-JDBC: https://shardingsphere.apache.org/document/legacy/4.x/document/cn/manual/sharding-jdbc/usage/read-write-splitting/
 
-#### 使用
+#### 使用: https://github.com/EwenSheng/JAVA-000/tree/main/Week_07/multiple-data-source
 
 为了使用shardingsphere变更了如下jar
 1. 很费解的是,我使用其他版本druid就无法启动,注入DataSource异常--待处理
