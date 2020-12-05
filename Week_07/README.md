@@ -40,6 +40,7 @@ Windows Terminal 1.3.2651.9
 SuperBenchmarker 4.5.1
 gateway-server-0.0.1-SNAPSHOT.jar -- 测试服务 端口8088
 Google Chrome
+Docker version 19.03.13
 ```
 
 ## 解题(必做题)
@@ -119,5 +120,79 @@ call insert_order_info(1,1000000)
 ~~~
 
 ### （必做）读写分离 - 动态切换数据源版本 1.0
+
+#### 准备工作（Docker + MySQL 5.7 主从)
+
+-- 注册mysql
+~~~
+docker run -p 3306:3306 --name docker_mysql_1 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7.32
+docker run -p 3307:3306 --name docker_mysql_2 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7.32
+~~~
+-- 查看所有容器
+docker ps -a
+~~~
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS                               NAMES
+2cd831edc697        mysql:5.7.32        "docker-entrypoint.s…"   2 minutes ago       Up 2 minutes               33060/tcp, 0.0.0.0:3307->3306/tcp   docker_mysql_2
+c09b88ff7a3a        mysql:5.7.32        "docker-entrypoint.s…"   33 minutes ago      Exited (0) 9 minutes ago                                       docker_mysql_1
+~~~
+-- 容器中没有Vim , 需要安装
+~~~
+按顺序执行如下：
+apt-get update
+apt-get install vim
+~~~
+
+-- 修改MySQL配置
+~~~
+docker exec -it c09b88ff7a3a /bin/bash
+cd /etc/mysql
+vim my.cnf
+~~~
+-- 主库配置从库用户
+~~~
+CREATE USER 'slave'@'%' IDENTIFIED BY '123456';
+GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'slave'@'%';
+~~~
+-- 开启Master-Slave主从复制
+~~~
+进入Master库mysql客户端：输入show master status查看Master状态
+~~~
+-- 进入到Slave库MySQL客户端，执行如下命令：
+~~~
+change master to master_host='172.17.0.2', master_user='slave', master_password='123456', master_port=3306, master_log_file='master-bin.000001', master_log_pos=617, master_connect_retry=30;
+master_host 根据docker命令查询主库信息
+docker inspect --format='{{.NetworkSettings.IPAddress}}' 容器名称 | 容器id查询容器的IP进行查询：
+~~~
+-- 查看从库状态
+~~~
+show slave status;
+Slave_IO_Running 和 Slave_SQL_Running是查看主从是否运行的关键字段，默认为NO，表示没有进行主从复制
+~~~
+-- 开启启主从复制
+~~~
+start slave;
+~~~
+-- 关闭主从复制
+~~~
+stop slave;
+~~~
+-- 重新配置主从
+~~~
+使用这两个命令 stop slave; reset master;
+~~~
+
+#### 使用
+
+~~~
+21:42:41.963 aop-auto-data-source [http-nio-8701-exec-1] INFO  c.a.a.d.s.aop.DataSourceContextAop - ========>>>>> 数据源切换至：master
+21:42:42.018 aop-auto-data-source [http-nio-8701-exec-1] DEBUG c.a.a.d.s.d.m.UserMapper.updateById - ==>  Preparing: UPDATE user SET `name`=?, age=? WHERE id=? 
+21:42:42.039 aop-auto-data-source [http-nio-8701-exec-1] DEBUG c.a.a.d.s.d.m.UserMapper.updateById - ==> Parameters: syw(String), 33(Integer), 1(Long)
+21:42:42.050 aop-auto-data-source [http-nio-8701-exec-1] DEBUG c.a.a.d.s.d.m.UserMapper.updateById - <==    Updates: 1
+21:42:47.909 aop-auto-data-source [http-nio-8701-exec-3] INFO  c.a.a.d.s.aop.DataSourceContextAop - ========>>>>> 数据源切换至：slave
+21:42:47.922 aop-auto-data-source [http-nio-8701-exec-3] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-2} inited
+21:42:47.943 aop-auto-data-source [http-nio-8701-exec-3] DEBUG c.a.a.d.s.d.m.UserMapper.selectList - ==>  Preparing: SELECT id,`name`,age FROM user 
+21:42:47.943 aop-auto-data-source [http-nio-8701-exec-3] DEBUG c.a.a.d.s.d.m.UserMapper.selectList - ==> Parameters: 
+21:42:47.965 aop-auto-data-source [http-nio-8701-exec-3] DEBUG c.a.a.d.s.d.m.UserMapper.selectList - <==      Total: 2
+~~~
 
 ### （必做）读写分离 - 数据库框架版本 2.0
