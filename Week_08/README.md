@@ -1,1 +1,41 @@
-学习笔记
+## 题目
+
+###（周四）
+1. （选做）分析前面作业设计的表，是否可以做垂直拆分。
+2. （必做）设计对前面的订单表数据进行水平分库分表，拆分 2 个库，每个库 16 张表。并在新结构在演示常见的增删改查操作。代码、sql 和配置文件，上传到 Github。
+3. （选做）模拟 1000 万的订单单表数据，迁移到上面作业 2 的分库分表中。
+4. （选做）重新搭建一套 4 个库各 64 个表的分库分表，将作业 2 中的数据迁移到新分库。
+
+###（周六）：
+1. （选做）列举常见的分布式事务，简单分析其使用场景和优缺点。
+2. （必做）基于 hmily TCC 或 ShardingSphere 的 Atomikos XA 实现一个简单的分布式事务应用 demo（二选一），提交到 Github。
+3. （选做）基于 ShardingSphere narayana XA 实现一个简单的分布式事务 demo。
+4. （选做）基于 seata 框架实现 TCC 或 AT 模式的分布式事务 demo。
+5. （选做☆）设计实现一个简单的 XA 分布式事务框架 demo，只需要能管理和调用 2 个 MySQL 的本地事务即可，不需要考虑全局事务的持久化和恢复、高可用等。
+6. （选做☆）设计实现一个 TCC 分布式事务框架的简单 Demo，需要实现事务管理器，不需要实现全局事务的持久化和恢复、高可用等。
+7. （选做☆）设计实现一个 AT 分布式事务框架的简单 Demo，仅需要支持根据主键 id 进行的单个删改操作的 SQL 或插入操作的事务。
+
+## 开发环境
+```
+个人终端：
+处理器：AMD Ryzen 9 4900HS Radeon Graphics 3.00GHZ
+RAM：40.0 GB(可用 39.4GB)
+类型：x64处理器
+```
+
+```
+JDK版本：
+java version "1.8.0_131"
+Java(TM) SE Runtime Environment (build 1.8.0_131-b11)
+Java HotSpot(TM) 64-Bit Server VM (build 25.131-b11, mixed mode)
+```
+
+```
+涉及工具：
+IntelliJ IDEA 2020.2
+Windows Terminal 1.3.2651.9
+SuperBenchmarker 4.5.1
+gateway-server-0.0.1-SNAPSHOT.jar -- 测试服务 端口8088
+Google Chrome
+Docker version 19.03.13
+```
