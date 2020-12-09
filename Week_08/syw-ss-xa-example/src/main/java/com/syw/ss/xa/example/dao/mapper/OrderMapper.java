@@ -10,27 +10,19 @@ import org.apache.ibatis.annotations.*;
  */
 public interface OrderMapper {
 
-    @Select({"<script>",
-            "SELECT * FROM order ",
-            "<where>",
-            "id = #{id}",
-            "<if test='userId!=null'>",
-            "user_id = #{userId}",
-            "</if>",
-            "</where>",
-            "</script>"})
+    @Select("SELECT * FROM t_order WHERE id =#{id}")
     @Results({
             @Result(property = "id", column = "id"),
             @Result(property = "userId", column = "user_id"),
     })
-    Order getByParams(@Param("id") Long id, @Param("user_id") Long userId);
+    Order get(Long id);
 
     @Insert("INSERT INTO t_order(`user_id`, `status`) VALUES(#{userId}, #{stauts})")
-    void insert(@Param("userId") Long userId, @Param("stauts") Integer stauts);
+    void insert(int userId, Integer stauts);
 
-    @Delete("DELETE FROM order WHERE id = #{id}")
-    int delete(@Param("id") Long id);
+    @Delete("DELETE FROM t_order WHERE id = #{id}")
+    int delete(Long id);
 
-    @Update("UPDATE order SET status = #{stauts} WHERE id = #{id}")
-    int update(@Param("id") Long id, @Param("stauts") Integer stauts);
+    @Update("UPDATE t_order SET status = #{stauts} WHERE id = #{id}")
+    int update(Long id, Integer stauts);
 }

@@ -16,7 +16,27 @@ public class OrderCaseTests {
     OrderService orderService;
 
     @Test
-    public void xa() {
+    public void inset() {
         orderService.insert();
+    }
+
+    @Test
+    public void get() {
+        System.out.println(orderService.get(Long.valueOf("543525333085716481")));
+    }
+
+    @Test
+    public void update() {
+        orderService.update(Long.valueOf("543525333085716481"), 1);
+    }
+
+    @Test
+    public void delete() {
+        orderService.delete(Long.valueOf("543525333085716481"));
+    }
+
+    @Test
+    public void xaOperating() {
+        orderService.xaOperating(Long.valueOf("543525333131853825"), Long.valueOf("543525333022801920"));
     }
 }

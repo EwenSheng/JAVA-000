@@ -46,17 +46,20 @@ Docker version 19.03.13
 ## 解题
 
 ### 准备工作
+
 ~~~
--- 新建数据库
+-- 新建数据库实例
 docker run -p 3308:3306 --name docker_mysql_M_1 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7.32
-docker run -p 3309:3306 --name docker_mysql_M_2 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7.32
 
+-- 新建数据库 & 新建表
+SQL文件地址：
 
-
+-- 文档
+https://shardingsphere.apache.org/document/legacy/4.x/document/cn/features/transaction/function/2pc-xa-transaction/
 ~~~
 
 ~~~
-坑：
+坑： spring-boot-starter-parent version 2.0+ 后 *.properties 不允许 _ 语法
 
 Description:
 
@@ -68,4 +71,64 @@ Configuration property name 'spring.shardingsphere.rules.sharding.sharding-algor
 Action:
 
 Modify 'spring.shardingsphere.rules.sharding.sharding-algorithms.database_inline.props' so that it conforms to the canonical names requirements.
+~~~
+
+### （必做）设计对前面的订单表数据进行水平分库分表，拆分 2 个库，每个库 16 张表。并在新结构在演示常见的增删改查操作。代码、sql 和配置文件，上传到 Github。
+
+作业地址：
+
+SQL地址：
+
+配置文件：
+
+~~~
+-- 数据采样1000 insert
+...
+2020-12-09 20:56:36.362  INFO 43272 --- [           main] ShardingSphere-SQL                       : Logic SQL: INSERT INTO t_order(`user_id`, `status`) VALUES(?, ?)
+2020-12-09 20:56:36.362  INFO 43272 --- [           main] ShardingSphere-SQL                       : SQLStatement: InsertStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.InsertStatement@39296cef, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@74ab8610), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@74ab8610, columnNames=[user_id, status], insertValueContexts=[InsertValueContext(parametersCount=2, valueExpressions=[ParameterMarkerExpressionSegment(startIndex=48, stopIndex=48, parameterMarkerIndex=0), ParameterMarkerExpressionSegment(startIndex=51, stopIndex=51, parameterMarkerIndex=1), DerivedParameterMarkerExpressionSegment(super=ParameterMarkerExpressionSegment(startIndex=0, stopIndex=0, parameterMarkerIndex=2))], parameters=[5, 0])], generatedKeyContext=Optional[GeneratedKeyContext(columnName=id, generated=true, generatedValues=[543535645797122048])])
+2020-12-09 20:56:36.362  INFO 43272 --- [           main] ShardingSphere-SQL                       : Actual SQL: ds-1 ::: INSERT INTO t_order_0(`user_id`, `status`, id) VALUES(?, ?, ?) ::: [5, 0, 543535645797122048]
+userId: 8,%2:0
+2020-12-09 20:56:36.365  INFO 43272 --- [           main] ShardingSphere-SQL                       : Logic SQL: INSERT INTO t_order(`user_id`, `status`) VALUES(?, ?)
+2020-12-09 20:56:36.365  INFO 43272 --- [           main] ShardingSphere-SQL                       : SQLStatement: InsertStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.InsertStatement@39296cef, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@1be3a294), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@1be3a294, columnNames=[user_id, status], insertValueContexts=[InsertValueContext(parametersCount=2, valueExpressions=[ParameterMarkerExpressionSegment(startIndex=48, stopIndex=48, parameterMarkerIndex=0), ParameterMarkerExpressionSegment(startIndex=51, stopIndex=51, parameterMarkerIndex=1), DerivedParameterMarkerExpressionSegment(super=ParameterMarkerExpressionSegment(startIndex=0, stopIndex=0, parameterMarkerIndex=2))], parameters=[8, 0])], generatedKeyContext=Optional[GeneratedKeyContext(columnName=id, generated=true, generatedValues=[543535645805510657])])
+2020-12-09 20:56:36.365  INFO 43272 --- [           main] ShardingSphere-SQL                       : Actual SQL: ds-0 ::: INSERT INTO t_order_1(`user_id`, `status`, id) VALUES(?, ?, ?) ::: [8, 0, 543535645805510657]
+userId: 2,%2:0
+2020-12-09 20:56:36.368  INFO 43272 --- [           main] ShardingSphere-SQL                       : Logic SQL: INSERT INTO t_order(`user_id`, `status`) VALUES(?, ?)
+2020-12-09 20:56:36.368  INFO 43272 --- [           main] ShardingSphere-SQL                       : SQLStatement: InsertStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.InsertStatement@39296cef, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@115924ba), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@115924ba, columnNames=[user_id, status], insertValueContexts=[InsertValueContext(parametersCount=2, valueExpressions=[ParameterMarkerExpressionSegment(startIndex=48, stopIndex=48, parameterMarkerIndex=0), ParameterMarkerExpressionSegment(startIndex=51, stopIndex=51, parameterMarkerIndex=1), DerivedParameterMarkerExpressionSegment(super=ParameterMarkerExpressionSegment(startIndex=0, stopIndex=0, parameterMarkerIndex=2))], parameters=[2, 0])], generatedKeyContext=Optional[GeneratedKeyContext(columnName=id, generated=true, generatedValues=[543535645818093568])])
+2020-12-09 20:56:36.368  INFO 43272 --- [           main] ShardingSphere-SQL                       : Actual SQL: ds-0 ::: INSERT INTO t_order_0(`user_id`, `status`, id) VALUES(?, ?, ?) ::: [2, 0, 543535645818093568]
+userId: 0,%2:0
+2020-12-09 20:56:36.370  INFO 43272 --- [           main] ShardingSphere-SQL                       : Logic SQL: INSERT INTO t_order(`user_id`, `status`) VALUES(?, ?)
+2020-12-09 20:56:36.370  INFO 43272 --- [           main] ShardingSphere-SQL                       : SQLStatement: InsertStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.InsertStatement@39296cef, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@3f0b5619), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@3f0b5619, columnNames=[user_id, status], insertValueContexts=[InsertValueContext(parametersCount=2, valueExpressions=[ParameterMarkerExpressionSegment(startIndex=48, stopIndex=48, parameterMarkerIndex=0), ParameterMarkerExpressionSegment(startIndex=51, stopIndex=51, parameterMarkerIndex=1), DerivedParameterMarkerExpressionSegment(super=ParameterMarkerExpressionSegment(startIndex=0, stopIndex=0, parameterMarkerIndex=2))], parameters=[0, 0])], generatedKeyContext=Optional[GeneratedKeyContext(columnName=id, generated=true, generatedValues=[543535645830676481])])
+2020-12-09 20:56:36.370  INFO 43272 --- [           main] ShardingSphere-SQL                       : Actual SQL: ds-0 ::: INSERT INTO t_order_1(`user_id`, `status`, id) VALUES(?, ?, ?) ::: [0, 0, 543535645830676481]
+========== OrderService.insert() ==========
+StopWatch 'insert order': running time = 4166613500 ns
+---------------------------------------------
+ns         %     Task name
+---------------------------------------------
+4166613500  100%  
+~~~
+
+### （必做）基于 hmily TCC 或 ShardingSphere 的 Atomikos XA 实现一个简单的分布式事务应用 demo（二选一），提交到 Github。
+
+XA 跨库 两段式提交, 测试代码如下:
+
+~~~
+  @Test
+    public void xaOperating() {
+        orderService.xaOperating(Long.valueOf("543525333131853825"), Long.valueOf("543525333022801920"));
+    }
+~~~
+
+测试结果如下:
+
+~~~
+2020-12-09 20:47:39.392  INFO 34880 --- [           main] ShardingSphere-SQL                       : Logic SQL: UPDATE t_order SET status = ? WHERE id = ?
+2020-12-09 20:47:39.393  INFO 34880 --- [           main] ShardingSphere-SQL                       : SQLStatement: UpdateStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.UpdateStatement@4769537a, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@4504a4ed), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@4504a4ed)
+2020-12-09 20:47:39.393  INFO 34880 --- [           main] ShardingSphere-SQL                       : Actual SQL: ds-0 ::: UPDATE t_order_1 SET status = ? WHERE id = ? ::: [1, 543525333131853825]
+2020-12-09 20:47:39.393  INFO 34880 --- [           main] ShardingSphere-SQL                       : Actual SQL: ds-1 ::: UPDATE t_order_1 SET status = ? WHERE id = ? ::: [1, 543525333131853825]
+2020-12-09 20:47:39.489  INFO 34880 --- [           main] ShardingSphere-SQL                       : Logic SQL: UPDATE t_order SET status = ? WHERE id = ?
+2020-12-09 20:47:39.489  INFO 34880 --- [           main] ShardingSphere-SQL                       : SQLStatement: UpdateStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.UpdateStatement@4769537a, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@9dbb1d9), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@9dbb1d9)
+2020-12-09 20:47:39.489  INFO 34880 --- [           main] ShardingSphere-SQL                       : Actual SQL: ds-0 ::: UPDATE t_order_0 SET status = ? WHERE id = ? ::: [1, 543525333022801920]
+2020-12-09 20:47:39.490  INFO 34880 --- [           main] ShardingSphere-SQL                       : Actual SQL: ds-1 ::: UPDATE t_order_0 SET status = ? WHERE id = ? ::: [1, 543525333022801920]
+
+java.lang.RuntimeException: STW
 ~~~

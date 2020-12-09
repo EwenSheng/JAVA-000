@@ -1,6 +1,7 @@
 package com.syw.ss.xa.example.service;
 
 import com.syw.ss.xa.example.dao.mapper.OrderMapper;
+import com.syw.ss.xa.example.dao.model.Order;
 import org.apache.shardingsphere.transaction.annotation.ShardingTransactionType;
 import org.apache.shardingsphere.transaction.core.TransactionType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,10 @@ public class OrderService {
     @Autowired
     private OrderMapper mapper;
 
+    public Order get(Long id) {
+        return mapper.get(id);
+    }
+
     @Transactional(rollbackFor = RuntimeException.class)
     @ShardingTransactionType(TransactionType.XA)
     public void insert() {
@@ -35,14 +40,36 @@ public class OrderService {
 
             System.out.println("userId: " + userId + ",%2:" + (userId % 2));
 
-            mapper.insert((long) userId, 0);
+            mapper.insert(userId, 0);
         }
 
         stopTheWatch(stopWatch);
-
-        /*throw new RuntimeException("STW");*/
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
+    @ShardingTransactionType(TransactionType.XA)
+    public void update(Long id, Integer status) {
+
+        mapper.update(id, status);
+    }
+
+    @Transactional(rollbackFor = RuntimeException.class)
+    @ShardingTransactionType(TransactionType.XA)
+    public void delete(Long id) {
+
+        mapper.delete(id);
+    }
+
+    @Transactional(rollbackFor = RuntimeException.class)
+    @ShardingTransactionType(TransactionType.XA)
+    public void xaOperating(Long ds0Id, Long ds1Id) {
+
+        mapper.update(ds0Id, 1);
+
+        mapper.update(ds1Id, 1);
+
+        throw new RuntimeException("STW");
+    }
 
     private void startTheWatch(StopWatch stopWatch) {
         stopWatch.start();
