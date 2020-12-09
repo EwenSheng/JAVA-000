@@ -1,0 +1,40 @@
+# shardingsphere 官网参考配置 https://shardingsphere.apache.org/document/current/cn/user-manual/shardingsphere-jdbc/usage/sharding/yaml/
+dataSources:
+  ds_0: !!com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://localhost:3308/demo_ds_0?useSSL=false
+    username: root
+    password: 123456
+  ds_1: !!com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://localhost:3309/demo_ds_1?useSSL=false
+    username: root
+    password: 123456
+
+rules:
+- !SHARDING
+  tables:
+    order:
+      actualDataNodes: demo_ds_${0..1}.order_${0..15}
+      databaseStrategy:
+        standard:
+          shardingColumn: user_id
+          shardingAlgorithmName: database_inline
+      tableStrategy:
+        standard:
+          shardingColumn: id
+          shardingAlgorithmName: order_inline
+  bindingTables:
+    - order
+  shardingAlgorithms:
+    database_inline:
+      type: INLINE
+      props:
+        algorithm-expression: demo_ds_${user_id % 2}
+    order_inline:
+      type: INLINE
+      props:
+        algorithm-expression: order_${id % 16}
+
+props:
+  sql.show: true

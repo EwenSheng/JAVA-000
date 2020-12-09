@@ -42,3 +42,30 @@ gateway-server-0.0.1-SNAPSHOT.jar -- 测试服务 端口8088
 Google Chrome
 Docker version 19.03.13
 ```
+
+## 解题
+
+### 准备工作
+~~~
+-- 新建数据库
+docker run -p 3308:3306 --name docker_mysql_M_1 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7.32
+docker run -p 3309:3306 --name docker_mysql_M_2 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7.32
+
+
+
+~~~
+
+~~~
+坑：
+
+Description:
+
+Configuration property name 'spring.shardingsphere.rules.sharding.sharding-algorithms.database_inline.props' is not valid:
+
+    Invalid characters: '_'
+    Reason: Canonical names should be kebab-case ('-' separated), lowercase alpha-numeric characters and must start with a letter
+
+Action:
+
+Modify 'spring.shardingsphere.rules.sharding.sharding-algorithms.database_inline.props' so that it conforms to the canonical names requirements.
+~~~
