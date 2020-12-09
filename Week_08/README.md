@@ -52,7 +52,11 @@ Docker version 19.03.13
 docker run -p 3308:3306 --name docker_mysql_M_1 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7.32
 
 -- 新建数据库 & 新建表
-SQL文件地址：
+ds_0
+- t_order_1 ~ t_order_15
+
+ds_1
+- t_order_1 ~ t_order_15
 
 -- 文档
 https://shardingsphere.apache.org/document/legacy/4.x/document/cn/features/transaction/function/2pc-xa-transaction/
@@ -75,11 +79,11 @@ Modify 'spring.shardingsphere.rules.sharding.sharding-algorithms.database_inline
 
 ### （必做）设计对前面的订单表数据进行水平分库分表，拆分 2 个库，每个库 16 张表。并在新结构在演示常见的增删改查操作。代码、sql 和配置文件，上传到 Github。
 
-作业地址：
+作业地址： https://github.com/EwenSheng/JAVA-000/tree/main/Week_08/syw-ss-xa-example/src/test/java
 
-SQL地址：
+SQL地址： https://github.com/EwenSheng/JAVA-000/tree/main/Week_08/db
 
-配置文件：
+配置文件： https://github.com/EwenSheng/JAVA-000/tree/main/Week_08/config
 
 ~~~
 -- 数据采样1000 insert
