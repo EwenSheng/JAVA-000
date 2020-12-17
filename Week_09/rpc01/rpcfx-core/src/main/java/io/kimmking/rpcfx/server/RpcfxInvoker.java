@@ -2,9 +2,11 @@ package io.kimmking.rpcfx.server;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import io.kimmking.rpcfx.api.RpcResponses;
 import io.kimmking.rpcfx.api.RpcfxRequest;
 import io.kimmking.rpcfx.api.RpcfxResolver;
 import io.kimmking.rpcfx.api.RpcfxResponse;
+import io.kimmking.rpcfx.exception.ErrorContext;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,7 +28,7 @@ public class RpcfxInvoker {
         this.serviceMap = serviceMap;
     }
 
-    public RpcfxResponse invoke(RpcfxRequest request) {
+/*    public RpcfxResponse invoke(RpcfxRequest request) {
 
         RpcfxResponse response = new RpcfxResponse();
         String serviceClass = request.getServiceClass();
@@ -53,11 +55,9 @@ public class RpcfxInvoker {
             response.setStatus(false);
             return response;
         }
-    }
+    }*/
 
     public RpcfxResponse invokeNew(RpcfxRequest request) {
-
-        RpcfxResponse response = new RpcfxResponse();
 
         try {
 
@@ -67,15 +67,16 @@ public class RpcfxInvoker {
 
             Object result = method.invoke(service.newInstance(), request.getParams());
 
-            response.setResult(JSON.toJSONString(result, SerializerFeature.WriteClassName));
-            response.setStatus(true);
-            return response;
+            return RpcResponses.create(JSON.toJSONString(result, SerializerFeature.WriteClassName));
 
-        } catch (IllegalAccessException | InvocationTargetException | ClassNotFoundException | InstantiationException e) {
-            e.printStackTrace();
-            response.setException(e);
-            response.setStatus(false);
-            return response;
+        } catch (IllegalAccessException e) {
+            return RpcResponses.error(ErrorContext.ILLEGAl_ACCESS_EXCEPTION_MESSAGE.getMessage());
+        } catch (InstantiationException e) {
+            return RpcResponses.error(ErrorContext.INSATNTIATION_EXCETPION_MESSAGE.getMessage());
+        } catch (InvocationTargetException e) {
+            return RpcResponses.error(ErrorContext.INVOCATION_TARGET_EXCEPTION_MESSAGE.getMessage());
+        } catch (ClassNotFoundException e) {
+            return RpcResponses.error(ErrorContext.CLASS_NOT_FOUND_EXCEPTION_MESSAGE.getMessage());
         }
     }
 
