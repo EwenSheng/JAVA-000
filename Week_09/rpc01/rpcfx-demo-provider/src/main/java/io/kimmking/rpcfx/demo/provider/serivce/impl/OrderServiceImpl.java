@@ -1,7 +1,8 @@
-package io.kimmking.rpcfx.demo.provider;
+package io.kimmking.rpcfx.demo.provider.serivce.impl;
 
 import io.kimmking.rpcfx.demo.api.Order;
 import io.kimmking.rpcfx.demo.api.OrderService;
+import org.springframework.stereotype.Service;
 
 public class OrderServiceImpl implements OrderService {
 

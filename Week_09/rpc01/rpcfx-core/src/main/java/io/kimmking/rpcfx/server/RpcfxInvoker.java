@@ -9,16 +9,25 @@ import io.kimmking.rpcfx.api.RpcfxResponse;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentMap;
 
 public class RpcfxInvoker {
 
     private RpcfxResolver resolver;
 
+    private ConcurrentMap<Class<?>, Class<?>> serviceMap;
+
     public RpcfxInvoker(RpcfxResolver resolver) {
         this.resolver = resolver;
     }
 
+    public RpcfxInvoker(RpcfxResolver resolver, final ConcurrentMap<Class<?>, Class<?>> serviceMap) {
+        this.resolver = resolver;
+        this.serviceMap = serviceMap;
+    }
+
     public RpcfxResponse invoke(RpcfxRequest request) {
+
         RpcfxResponse response = new RpcfxResponse();
         String serviceClass = request.getServiceClass();
 
@@ -46,7 +55,35 @@ public class RpcfxInvoker {
         }
     }
 
+    public RpcfxResponse invokeNew(RpcfxRequest request) {
+
+        RpcfxResponse response = new RpcfxResponse();
+
+        try {
+
+            Class<?> service = serviceMap.get(Class.forName(request.getServiceClass()));
+
+            Method method = resolveMethodFromClass(service, request.getMethod());
+
+            Object result = method.invoke(service.newInstance(), request.getParams());
+
+            response.setResult(JSON.toJSONString(result, SerializerFeature.WriteClassName));
+            response.setStatus(true);
+            return response;
+
+        } catch (IllegalAccessException | InvocationTargetException | ClassNotFoundException | InstantiationException e) {
+            e.printStackTrace();
+            response.setException(e);
+            response.setStatus(false);
+            return response;
+        }
+    }
+
     private Method resolveMethodFromClass(Class<?> klass, String methodName) {
-        return Arrays.stream(klass.getMethods()).filter(m -> methodName.equals(m.getName())).findFirst().get();
+
+        return Arrays.stream(klass.getMethods())
+                .filter(m -> methodName.equals(m.getName()))
+                .findFirst()
+                .orElse(null);
     }
 }
