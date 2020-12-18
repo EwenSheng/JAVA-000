@@ -115,7 +115,99 @@ private static <T> T getByteProxy(Class<T> serviceClass, String url)
 1. 思路：替换OkHttp部分 -> netty
 2. 改造代码部分，[链接][https://github.com/EwenSheng/JAVA-000/tree/main/Week_09/rpc01/rpcfx-core/src/main/java/io/kimmking/rpcfx/client/netty]
 
+~~~
+public class RpcfxNettyClient {
 
+    private final static RpcfxNettyClient INSTANCE = new RpcfxNettyClient();
+
+    public static RpcfxNettyClient getInstance() {
+        return INSTANCE;
+    }
+
+    /* 缓存的作用，使用Map来保存用过的Channel */
+    public final static ConcurrentHashMap<String, Channel> channelPool = new ConcurrentHashMap<>();
+
+    private final EventLoopGroup clientGroup;
+
+    private RpcfxNettyClient() {
+        clientGroup = new NioEventLoopGroup(0, new ThreadFactoryBuilder()
+                .setNameFormat("rpc-netty-pool-%d").build(), SelectorProvider.provider());
+    }
+
+    public RpcfxResponse getResponse(String rpcRequest, String url)
+            throws InterruptedException, URISyntaxException {
+
+        FullHttpRequest fullHttpRequest = createFullHttpRequest(rpcRequest, new URI(url));
+
+        URI uri = new URI(url);
+        String cacheKey = uri.getHost() + ":" + uri.getPort();
+
+        if (channelPool.containsKey(cacheKey)) {
+            Channel channel = channelPool.get(cacheKey);
+            try {
+                RpcfxNettyInboundHandler handler = new RpcfxNettyInboundHandler();
+                channel.pipeline().replace("clientHandler", "clientHandler", handler);
+                channel.writeAndFlush(fullHttpRequest).sync();
+                return handler.getResponse(3, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                channel.close();
+                channelPool.remove(cacheKey);
+            }
+        }
+
+        RpcfxNettyInboundHandler handler = new RpcfxNettyInboundHandler();
+
+        Channel channel = createChannel(uri.getHost(), uri.getPort());
+        channel.pipeline().replace("clientHandler", "clientHandler", handler);
+        channel.writeAndFlush(fullHttpRequest).sync();
+
+        channelPool.put(cacheKey, channel);
+        return handler.getResponse(3, TimeUnit.SECONDS);
+    }
+
+    private FullHttpRequest createFullHttpRequest(String content, URI uri) {
+
+        FullHttpRequest request = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.POST, uri.toASCIIString(), Unpooled.wrappedBuffer(content.getBytes(Charsets.UTF_8))
+        );
+
+        request.headers()
+                .set(HttpHeaderNames.HOST, uri.getHost())
+                .set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE)
+                .set(HttpHeaderNames.CONTENT_LENGTH, request.content().readableBytes())
+                .set(HttpHeaderNames.CONTENT_TYPE, "application/json");
+
+        return request;
+    }
+
+    private Channel createChannel(String address, int port) throws InterruptedException {
+
+        Bootstrap bootstrap = new Bootstrap();
+
+        bootstrap.group(clientGroup)
+                .option(ChannelOption.SO_REUSEADDR, true)
+                .option(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.AUTO_CLOSE, true)
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .channel(NioSocketChannel.class)
+                .handler((new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    public void initChannel(SocketChannel ch) {
+                        ch.pipeline()
+                                .addLast(new HttpResponseDecoder())
+                                .addLast(new HttpRequestEncoder())
+                                .addLast("clientHandler", new RpcfxNettyInboundHandler());
+                    }
+                }));
+
+        return bootstrap.connect(address, port).sync().channel();
+    }
+
+    public void destroy() {
+        clientGroup.shutdownGracefully();
+    }
+}
+~~~
 
 ### 结合 dubbo+hmily,实现一个 TCC 外汇交易处理; ==> 未实现
 
