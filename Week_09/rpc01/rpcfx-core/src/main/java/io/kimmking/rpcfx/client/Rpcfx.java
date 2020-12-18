@@ -45,6 +45,7 @@ public final class Rpcfx {
 
         DynamicType.Unloaded<?> dynamicType = new ByteBuddy()
                 .subclass(Object.class)
+                .name(serviceClass.getCanonicalName())
                 .implement(serviceClass)
                 .intercept(InvocationHandlerAdapter.of(new RpcfxInvocationHandler(serviceClass, url)))
                 .make();
