@@ -1,0 +1,6 @@
+server:
+  port: 8902
+
+spring:
+  application:
+    name: syw-rpc-tcc-example-consumer

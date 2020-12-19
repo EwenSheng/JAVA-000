@@ -1,0 +1,29 @@
+server:
+  port: 8901
+
+spring:
+  application:
+    name: syw-rpc-tcc-example-provider
+  shardingsphere:
+    datasource:
+      names: tcc-0,tcc-1
+      tcc-0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3308/tcc_1?useSSL=false
+        username: root
+        password: 123456
+      tcc-1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3308/tcc_2?useSSL=false
+        username: root
+        password: 123456
+    sharding:
+      default-database-strategy:
+        inline:
+          sharding-column: user_id
+          algorithm-expression: tcc-$->{user_id % 2}
+    props:
+      sql:
+        show: true

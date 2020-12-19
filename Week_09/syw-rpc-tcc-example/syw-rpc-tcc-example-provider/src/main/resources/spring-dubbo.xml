@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="syw-rpc-tcc-example-provider"/>
+
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+
+    <dubbo:protocol name="dubbo" port="20890"/>
+
+    <!--<dubbo:protocol name="dubbo" port="-1"
+                    server="netty" client="netty"
+                    charset="UTF-8" threadpool="fixed" threads="500"
+                    queues="0" buffer="8192" accepts="0" payload="8388608"/>-->
+
+
+    <dubbo:service interface="com.syw.rpc.example.api.service.RMBAccountService"
+                   ref="rmbAccountService"
+                   executes="20"/>
+
+    <dubbo:service interface="com.syw.rpc.example.api.service.USDAccountService"
+                   ref="usdAccountService"
+                   executes="20"/>
+
+</beans>

@@ -2,8 +2,8 @@ package provider.service.impl;
 
 import com.syw.rpc.example.api.model.RMBAccount;
 import com.syw.rpc.example.api.service.RMBAccountService;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import provider.dao.mapper.RMBAccountMapper;
 import provider.dao.mapper.RMBFreezeAccountMapper;
 
@@ -12,7 +12,7 @@ import provider.dao.mapper.RMBFreezeAccountMapper;
  * @date: 2020/12/19 10:53
  * @description:
  */
-@Service
+@Service("rmbAccountService")
 public class RMBAccountServiceImpl implements RMBAccountService {
 
     @Autowired
@@ -20,7 +20,6 @@ public class RMBAccountServiceImpl implements RMBAccountService {
 
     @Autowired
     private RMBFreezeAccountMapper rmbFreezeAccountMapper;
-
 
     @Override
     public boolean transfer(RMBAccount model) {

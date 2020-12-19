@@ -2,8 +2,8 @@ package provider.service.impl;
 
 import com.syw.rpc.example.api.model.USDAccount;
 import com.syw.rpc.example.api.service.USDAccountService;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import provider.dao.mapper.USDAccountMapper;
 import provider.dao.mapper.USDFreezeAccountMapper;
 
@@ -12,7 +12,7 @@ import provider.dao.mapper.USDFreezeAccountMapper;
  * @date: 2020/12/19 10:53
  * @description:
  */
-@Service
+@Service("usdAccountService")
 public class USDAccountServiceImpl implements USDAccountService {
 
     @Autowired

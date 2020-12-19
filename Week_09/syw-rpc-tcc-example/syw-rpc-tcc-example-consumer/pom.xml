@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>rpc</artifactId>
+        <artifactId>syw-rpc-tcc-example</artifactId>
         <groupId>com.syw.rpc.example</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -14,7 +14,6 @@
     <properties>
         <java.version>1.8</java.version>
         <syw.version>1.0-SNAPSHOT</syw.version>
-        <dubbo.version>2.7.6</dubbo.version>
     </properties>
 
     <dependencies>
@@ -37,23 +36,25 @@
 
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>${dubbo.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-dependencies-zookeeper</artifactId>
-            <version>${dubbo.version}</version>
-            <type>pom</type>
+            <artifactId>dubbo</artifactId>
+            <version>2.7.7</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
+                    <artifactId>dubbo-dependencies-zookeeper</artifactId>
+                    <groupId>org.apache.dubbo</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

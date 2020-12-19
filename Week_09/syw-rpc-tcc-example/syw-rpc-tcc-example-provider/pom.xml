@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>rpc</artifactId>
+        <artifactId>syw-rpc-tcc-example</artifactId>
         <groupId>com.syw.rpc.example</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -17,8 +17,8 @@
         <druid.version>1.1.24</druid.version>
         <shardingsphere.version>4.1.0</shardingsphere.version>
         <mysql.drive.version>5.1.47</mysql.drive.version>
-        <mybatis.version>2.0.0</mybatis.version>
-        <dubbo.version>2.7.6</dubbo.version>
+        <mybatis.version>2.1.3</mybatis.version>
+        <dubbo.version>2.7.7</dubbo.version>
     </properties>
 
     <dependencies>
@@ -31,7 +31,7 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
@@ -48,11 +48,6 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${mybatis.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
         </dependency>
 
         <dependency>
@@ -75,23 +70,25 @@
 
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>${dubbo.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-dependencies-zookeeper</artifactId>
-            <version>${dubbo.version}</version>
-            <type>pom</type>
+            <artifactId>dubbo</artifactId>
+            <version>2.7.7</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
+                    <artifactId>dubbo-dependencies-zookeeper</artifactId>
+                    <groupId>org.apache.dubbo</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

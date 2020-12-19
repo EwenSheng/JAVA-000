@@ -1,24 +1,26 @@
 package provider;
 
-import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
-import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ImportResource;
 
 /**
  * @author: Ewen-Sheng
  * @date: 2020/12/19 17:01
  * @description:
  */
-
-@SpringBootApplication
 @MapperScan("provider.dao.mapper")
-@EnableDubbo
-@DubboComponentScan(basePackages = "com.syw.rpc.example.api.service")
+@ImportResource({"classpath:spring-dubbo.xml"})
+@SpringBootApplication
 public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        try {
+            SpringApplication.run(Application.class, args);
+            System.out.println("Server startup done.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

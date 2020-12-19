@@ -4,7 +4,7 @@ import com.syw.rpc.example.api.model.RMBAccount;
 import com.syw.rpc.example.api.model.USDAccount;
 import com.syw.rpc.example.api.service.RMBAccountService;
 import com.syw.rpc.example.api.service.USDAccountService;
-import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 public class DemoController {
 
-    @Reference
+    @Autowired
     private USDAccountService usdAccountService;
 
-    @Reference
-    private RMBAccountService accountService;
+    @Autowired
+    private RMBAccountService rmbAccountService;
 
     @GetMapping("/test")
     public void test() {
         System.out.println("test begin =>>>>>");
 
-        usdAccountService.transfer(new USDAccount());
+        System.out.println("usd=>" + usdAccountService.transfer(new USDAccount()));
 
-        accountService.transfer(new RMBAccount());
+        System.out.println("rmb=>" + rmbAccountService.transfer(new RMBAccount()));
 
         System.out.println("test end =>>>>>");
     }

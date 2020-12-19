@@ -213,6 +213,10 @@ public class RpcfxNettyClient {
 
 #### 准备工作
 
+- 用户 A 的美元账户和人民币账户都在 A 库,使用 1 美元兑换 7 人民币;
+- 用户 B 的美元账户和人民币账户都在 B 库,使用 7 人民币兑换 1 美元;
+- 设计账户表,冻结资产表,实现上述两个本地事务的分布式事务。
+
 1. 通过Docker安装Zookeeper
 ~~~
 -- zooker last version
@@ -224,8 +228,15 @@ docker ps -a -- 查看id
 docker start id/name
 ~~~
 
-#### 用户 A 的美元账户和人民币账户都在 A 库,使用 1 美元兑换 7 人民币;
+2. 参考文档
 
-#### 用户 B 的美元账户和人民币账户都在 B 库,使用 7 人民币兑换 1 美元;
+[dubbo 用户手册](http://dubbo.apache.org/zh/docs/v2.7/user/configuration/xml/)
+[himly-dubbo 用户手册](https://dromara.org/website/zh-cn/docs/hmily/user-dubbo.html)
+[himly-dubbo-demo 源码](https://github.com/dromara/hmily/tree/master/hmily-demo/hmily-demo-dubbo)
+[shardingsphere 配置](https://shardingsphere.apache.org/document/legacy/4.x/document/cn/manual/sharding-jdbc/configuration/config-yaml/)
 
-#### 设计账户表,冻结资产表,实现上述两个本地事务的分布式事务。
+组装这些第三包及其痛苦,另外不知道是不是我的Idea问题,老发生properties update后ss无法读取到数据库type;
+1. spring-boot 2.x 以上使用 shardingshpare-jdbc 4.x 以上版本;
+2. dubbo 2.7.5 以上版本;
+3. zookeeper 最新版本;
+

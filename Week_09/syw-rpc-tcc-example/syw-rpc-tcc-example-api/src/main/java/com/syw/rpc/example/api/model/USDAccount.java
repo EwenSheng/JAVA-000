@@ -2,6 +2,7 @@ package com.syw.rpc.example.api.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
  * @description:
  */
 @Data
-public class USDAccount {
+public class USDAccount implements Serializable {
 
     private Long id;
 
