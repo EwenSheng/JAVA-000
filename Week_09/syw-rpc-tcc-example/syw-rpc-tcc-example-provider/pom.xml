@@ -8,24 +8,25 @@
         <groupId>com.syw.rpc.example</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>org.example</groupId>
-    <artifactId>syw-tcc-rpc-example-provider</artifactId>
+    <artifactId>syw-rpc-tcc-example-provider</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <java.version>1.8</java.version>
+        <syw.version>1.0-SNAPSHOT</syw.version>
         <druid.version>1.1.24</druid.version>
         <shardingsphere.version>4.1.0</shardingsphere.version>
         <mysql.drive.version>5.1.47</mysql.drive.version>
         <mybatis.version>2.0.0</mybatis.version>
+        <dubbo.version>2.7.6</dubbo.version>
     </properties>
 
     <dependencies>
 
         <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>syw-rpc-example-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>com.syw.rpc.example</groupId>
+            <artifactId>syw-rpc-tcc-example-api</artifactId>
+            <version>${syw.version}</version>
         </dependency>
 
         <dependency>
@@ -64,6 +65,31 @@
             <groupId>org.apache.shardingsphere</groupId>
             <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
             <version>${shardingsphere.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <version>${dubbo.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-dependencies-zookeeper</artifactId>
+            <version>${dubbo.version}</version>
+            <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

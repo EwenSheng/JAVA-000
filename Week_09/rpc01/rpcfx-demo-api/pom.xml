@@ -8,7 +8,6 @@
 		<version>0.0.1-SNAPSHOT</version>
 <!--		<relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
 	</parent>
-	<groupId>io.kimmking</groupId>
 	<artifactId>rpcfx-demo-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>rpcfx-demo-api</name>
