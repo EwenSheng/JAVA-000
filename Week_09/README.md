@@ -215,7 +215,13 @@ public class RpcfxNettyClient {
 
 1. 通过Docker安装Zookeeper
 ~~~
+-- zooker last version
 docker pull zookeeper
+-- 注册 zookeeper 镜像
+ docker run -d --name local_zookeeper -p 2181:2181 zookeeper
+-- 启动
+docker ps -a -- 查看id
+docker start id/name
 ~~~
 
 #### 用户 A 的美元账户和人民币账户都在 A 库,使用 1 美元兑换 7 人民币;
