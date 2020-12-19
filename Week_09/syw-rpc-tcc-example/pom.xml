@@ -11,14 +11,14 @@
     <groupId>com.syw.rpc.example</groupId>
     <artifactId>rpc</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>syw-rpc-example</name>
+    <name>syw-rpc-tcc-example</name>
     <packaging>pom</packaging>
     <description>RPC Demo project for Spring Boot</description>
 
     <modules>
-        <module>syw-rpc-example-api</module>
-        <module>syw-rpc-example-provider</module>
-        <module>syw-rpc-example-consumer</module>
+        <module>syw-rpc-tcc-example-api</module>
+        <module>syw-rpc-tcc-example-provider</module>
+        <module>syw-rpc-tcc-example-consumer</module>
     </modules>
 
     <properties>
