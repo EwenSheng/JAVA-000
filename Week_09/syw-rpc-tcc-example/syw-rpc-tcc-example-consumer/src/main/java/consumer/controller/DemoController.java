@@ -1,12 +1,11 @@
 package consumer.controller;
 
-import com.syw.rpc.example.api.model.RMBAccount;
-import com.syw.rpc.example.api.model.USDAccount;
-import com.syw.rpc.example.api.service.RMBAccountService;
-import com.syw.rpc.example.api.service.USDAccountService;
+import consumer.serivce.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 
 /**
  * @author: Ewen-Sheng
@@ -17,19 +16,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class DemoController {
 
     @Autowired
-    private USDAccountService usdAccountService;
+    private TransferService service;
 
-    @Autowired
-    private RMBAccountService rmbAccountService;
+    @GetMapping("/test_a")
+    public void testA() {
+        System.out.println("test_a begin =>>>>>");
 
-    @GetMapping("/test")
-    public void test() {
-        System.out.println("test begin =>>>>>");
+        // 用户 A 的美元账户和人民币账户都在 A 库,使用 1 美元兑换 7 人民币;
+        service.transferToRMB(1L, new BigDecimal(1));
 
-        System.out.println("usd=>" + usdAccountService.transfer(new USDAccount()));
+        System.out.println("test_a end =>>>>>");
+    }
 
-        System.out.println("rmb=>" + rmbAccountService.transfer(new RMBAccount()));
+    @GetMapping("/test_b")
+    public void testB() {
+        System.out.println("test_b begin =>>>>>");
 
-        System.out.println("test end =>>>>>");
+        // 用户 B 的美元账户和人民币账户都在 B 库,使用 7 人民币兑换 1 美元;
+        service.transferToUsd(2L, new BigDecimal(7));
+
+        System.out.println("test_b end =>>>>>");
     }
 }

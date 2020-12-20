@@ -49,6 +49,11 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.dromara</groupId>
+            <artifactId>hmily-spring-boot-starter-apache-dubbo</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

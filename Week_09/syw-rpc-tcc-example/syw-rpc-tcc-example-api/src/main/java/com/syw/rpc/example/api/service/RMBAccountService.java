@@ -1,7 +1,6 @@
 package com.syw.rpc.example.api.service;
 
-import com.syw.rpc.example.api.model.RMBAccount;
-import com.syw.rpc.example.api.model.USDAccount;
+import com.syw.rpc.example.api.model.dto.RMBAccountDTO;
 
 /**
  * @author: Ewen-Sheng
@@ -10,5 +9,5 @@ import com.syw.rpc.example.api.model.USDAccount;
  */
 public interface RMBAccountService {
 
-    boolean transfer(RMBAccount model);
+    Boolean operating(RMBAccountDTO model);
 }

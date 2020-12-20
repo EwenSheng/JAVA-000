@@ -1,10 +1,12 @@
 package provider.service.impl;
 
-import com.syw.rpc.example.api.model.RMBAccount;
+import com.syw.rpc.example.api.model.dto.RMBAccountDTO;
 import com.syw.rpc.example.api.service.RMBAccountService;
 import org.dromara.hmily.annotation.HmilyTCC;
+import org.dromara.hmily.common.exception.HmilyRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import provider.dao.enity.RMBAccount;
 import provider.dao.mapper.RMBAccountMapper;
 import provider.dao.mapper.RMBFreezeAccountMapper;
 
@@ -24,17 +26,37 @@ public class RMBAccountServiceImpl implements RMBAccountService {
 
     @Override
     @HmilyTCC(confirmMethod = "confirm", cancelMethod = "cancel")
-    public boolean transfer(RMBAccount model) {
+    public Boolean operating(RMBAccountDTO dto) {
+
+        System.out.println("RMBAccountDTO operating =>>>>>" + dto);
+
+        RMBAccount account = rmbAccountMapper.get(dto.getUserId());
+
+        if (dto.getDeduction()) {
+            // 扣款行为
+            if (dto.getBalance().compareTo(account.getBalance()) > 0) {
+                throw new HmilyRuntimeException("余额不足");
+            }
+        }
+
+        rmbFreezeAccountMapper.insert(dto.getUserId(), dto.getBalance(), account.getId());
         return true;
     }
 
-    public Boolean confirm(RMBAccount model) {
-        System.out.println("confirm =>>>>>" + model);
+    public Boolean confirm(RMBAccountDTO dto) {
+        System.out.println("RMBAccountDTO confirm =>>>>>" + dto);
+        rmbFreezeAccountMapper.delete(dto.getUserId());
+
+        RMBAccount account = rmbAccountMapper.get(dto.getUserId());
+        account.setBalance(dto.getDeduction() ? account.getBalance().subtract(dto.getBalance()) : account.getBalance().add(dto.getBalance()));
+
+        rmbAccountMapper.update(account.getUserId(), account.getBalance());
         return true;
     }
 
-    public Boolean cancel(RMBAccount model) {
-        System.out.println("cancel =>>>>>" + model);
+    public Boolean cancel(RMBAccountDTO dto) {
+        System.out.println("RMBAccountDTO cancel =>>>>>" + dto);
+        rmbFreezeAccountMapper.delete(dto.getUserId());
         return true;
     }
 }

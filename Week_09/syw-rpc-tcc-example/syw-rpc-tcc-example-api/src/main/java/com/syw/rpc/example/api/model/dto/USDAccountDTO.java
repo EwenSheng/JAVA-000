@@ -1,4 +1,4 @@
-package com.syw.rpc.example.api.model;
+package com.syw.rpc.example.api.model.dto;
 
 import lombok.Data;
 
@@ -11,13 +11,11 @@ import java.math.BigDecimal;
  * @description:
  */
 @Data
-public class USDFreezeAccount implements Serializable {
-
-    private Long id;
+public class USDAccountDTO implements Serializable {
 
     private Long userId;
 
-    private Long accountId;
-
     private BigDecimal balance;
+
+    private Boolean deduction;
 }

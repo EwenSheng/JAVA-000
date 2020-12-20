@@ -1,8 +1,7 @@
-package com.syw.rpc.example.api.model;
+package provider.dao.enity;
 
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -11,11 +10,13 @@ import java.math.BigDecimal;
  * @description:
  */
 @Data
-public class USDAccount implements Serializable {
+public class RMBFreezeAccount {
 
     private Long id;
 
     private Long userId;
+
+    private Long accountId;
 
     private BigDecimal balance;
 }

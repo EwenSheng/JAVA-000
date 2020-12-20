@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ImportResource;
  * @description:
  */
 @MapperScan("provider.dao.mapper")
-@ImportResource({"classpath:spring-dubbo.xml"})
+@ImportResource(locations = {"classpath:spring-dubbo.xml"})
 @SpringBootApplication
 public class Application {
 

@@ -1,7 +1,7 @@
 package provider.dao.mapper;
 
-import com.syw.rpc.example.api.model.USDFreezeAccount;
 import org.apache.ibatis.annotations.*;
+import provider.dao.enity.RMBFreezeAccount;
 
 import java.math.BigDecimal;
 
@@ -12,16 +12,21 @@ import java.math.BigDecimal;
  */
 public interface RMBFreezeAccountMapper {
 
-    @Select("SELECT * FROM rmb_freeze_account WHERE id =#{id} and user_id = #{userId}")
+    @Select("SELECT * FROM rmb_freeze_account WHERE  user_id = #{userId}")
     @Results({
             @Result(property = "id", column = "id"),
             @Result(property = "userId", column = "user_id"),
+            @Result(property = "accountId", column = "account_id"),
+            @Result(property = "balance", column = "balance"),
     })
-    USDFreezeAccount get(Long id);
+    RMBFreezeAccount get(Long userId);
 
-    @Insert("INSERT INTO rmb_freeze_account(`user_id`, `balance`, `account_id`) VALUES(#{userId}, #{balance}, #{account_id})")
-    void insert(int userId, BigDecimal balance);
+    @Insert("INSERT INTO rmb_freeze_account(`user_id`, `balance`, `account_id`) VALUES(#{userId}, #{balance}, #{accountId})")
+    void insert(Long userId, BigDecimal balance, Long accountId);
 
-    @Update("UPDATE rmb_freeze_account SET balance = #{balance} WHERE id = #{id} and user_id = #{userId}")
-    int update(Long id, Long userId, BigDecimal balance);
+    @Update("UPDATE rmb_freeze_account SET balance = #{balance} WHERE user_id = #{userId}")
+    int update(Long userId, BigDecimal balance);
+
+    @Delete("DELETE FROM rmb_freeze_account WHERE user_id = #{userId}")
+    int delete(Long userId);
 }

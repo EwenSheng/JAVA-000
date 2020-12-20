@@ -12,9 +12,11 @@
 
     <dubbo:reference id="rmbAccountService"
                      check="false"
+                     retries="0"
                      interface="com.syw.rpc.example.api.service.RMBAccountService"/>
 
     <dubbo:reference id="usdAccountService"
                      check="false"
+                     retries="0"
                      interface="com.syw.rpc.example.api.service.USDAccountService"/>
 </beans>

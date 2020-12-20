@@ -1,7 +1,7 @@
 package provider.dao.mapper;
 
-import com.syw.rpc.example.api.model.USDFreezeAccount;
 import org.apache.ibatis.annotations.*;
+import provider.dao.enity.RMBAccount;
 
 import java.math.BigDecimal;
 
@@ -12,16 +12,17 @@ import java.math.BigDecimal;
  */
 public interface RMBAccountMapper {
 
-    @Select("SELECT * FROM rmb_account WHERE id =#{id} and user_id = #{userId}")
+    @Select("SELECT id,user_id,balance FROM rmb_account WHERE user_id = #{userId}")
     @Results({
             @Result(property = "id", column = "id"),
             @Result(property = "userId", column = "user_id"),
+            @Result(property = "balance", column = "balance"),
     })
-    USDFreezeAccount get(Long id);
+    RMBAccount get(Long userId);
 
     @Insert("INSERT INTO rmb_account(`user_id`, `balance`, `account_id`) VALUES(#{userId}, #{balance}, #{account_id})")
-    void insert(int userId, BigDecimal balance);
+    void insert(Long userId, BigDecimal balance);
 
-    @Update("UPDATE rmb_account SET balance = #{balance} WHERE id = #{id} and user_id = #{userId}")
-    int update(Long id, Long userId, BigDecimal balance);
+    @Update("UPDATE rmb_account SET balance = #{balance} WHERE user_id = #{userId}")
+    int update(Long userId, BigDecimal balance);
 }

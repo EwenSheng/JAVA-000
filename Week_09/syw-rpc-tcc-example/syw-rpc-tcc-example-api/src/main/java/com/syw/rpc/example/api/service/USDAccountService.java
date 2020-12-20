@@ -1,6 +1,6 @@
 package com.syw.rpc.example.api.service;
 
-import com.syw.rpc.example.api.model.USDAccount;
+import com.syw.rpc.example.api.model.dto.USDAccountDTO;
 
 /**
  * @author: Ewen-Sheng
@@ -9,5 +9,5 @@ import com.syw.rpc.example.api.model.USDAccount;
  */
 public interface USDAccountService {
 
-    boolean transfer(USDAccount model);
+    Boolean operating(USDAccountDTO model);
 }
