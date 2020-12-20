@@ -213,13 +213,94 @@ public class RpcfxNettyClient {
 
 #### 准备工作
 
+- 用户 A 的美元账户和人民币账户都在 A 库,使用 1 美元兑换 7 人民币;
+- 用户 B 的美元账户和人民币账户都在 B 库,使用 7 人民币兑换 1 美元;
+- 设计账户表,冻结资产表,实现上述两个本地事务的分布式事务。
+
 1. 通过Docker安装Zookeeper
 ~~~
+-- zooker last version
 docker pull zookeeper
+-- 注册 zookeeper 镜像
+ docker run -d --name local_zookeeper -p 2181:2181 zookeeper
+-- 启动
+docker ps -a -- 查看id
+docker start id/name
 ~~~
 
-#### 用户 A 的美元账户和人民币账户都在 A 库,使用 1 美元兑换 7 人民币;
+2. 参考文档
 
-#### 用户 B 的美元账户和人民币账户都在 B 库,使用 7 人民币兑换 1 美元;
+[dubbo 用户手册](http://dubbo.apache.org/zh/docs/v2.7/user/configuration/xml/)
+[himly-dubbo 用户手册](https://dromara.org/website/zh-cn/docs/hmily/user-dubbo.html)
+[himly-dubbo-demo 源码](https://github.com/dromara/hmily/tree/master/hmily-demo/hmily-demo-dubbo)
+[shardingsphere 配置](https://shardingsphere.apache.org/document/legacy/4.x/document/cn/manual/sharding-jdbc/configuration/config-yaml/)
 
-#### 设计账户表,冻结资产表,实现上述两个本地事务的分布式事务。
+组装这些第三包及其痛苦,另外不知道是不是我的Idea问题,老发生properties update后ss无法读取到数据库type;
+- spring-boot 2.x 以上使用 shardingshpare-jdbc 4.x 以上版本;
+- dubbo 2.7.5 以上版本,zookeeper 最新版本;
+- 一定要clone himly-demo下来看下!!!
+
+
+3. 启动hmily本地配置,准备Hmily数据库
+
+
+作业地址：
+
+consumer:
+~~~
+test_a begin =>>>>>
+test_a end =>>>>>
+confirm =>>>>> userid:1,balance:1
+~~~
+
+provider:
+~~~
+USDAccountDTO operating =>>>>>USDAccountDTO(userId=1, balance=1, deduction=true)
+2020-12-20 15:18:40.721  INFO 30536 --- [:20890-thread-2] ShardingSphere-SQL                       : Logic SQL: SELECT id,user_id,balance FROM usd_account WHERE user_id = ?
+2020-12-20 15:18:40.721  INFO 30536 --- [:20890-thread-2] ShardingSphere-SQL                       : SQLStatement: SelectStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.SelectStatement@4c5cfdf1, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@1ca164cd), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@1ca164cd, projectionsContext=ProjectionsContext(startIndex=7, stopIndex=24, distinctRow=false, projections=[ColumnProjection(owner=null, name=id, alias=Optional.empty), ColumnProjection(owner=null, name=user_id, alias=Optional.empty), ColumnProjection(owner=null, name=balance, alias=Optional.empty)]), groupByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.groupby.GroupByContext@687305b6, orderByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.orderby.OrderByContext@11fee45b, paginationContext=org.apache.shardingsphere.sql.parser.binder.segment.select.pagination.PaginationContext@3a6620e0, containsSubquery=false)
+2020-12-20 15:18:40.721  INFO 30536 --- [:20890-thread-2] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: SELECT id,user_id,balance FROM usd_account WHERE user_id = ? ::: [1]
+USDAccountDTO cancel =>>>>>USDAccountDTO(userId=1, balance=1, deduction=true)
+2020-12-20 15:18:40.769  INFO 30536 --- [ecutorHandler-5] ShardingSphere-SQL                       : Logic SQL: DELETE FROM usd_freeze_account WHERE user_id = ?
+2020-12-20 15:18:40.769  INFO 30536 --- [ecutorHandler-5] ShardingSphere-SQL                       : SQLStatement: DeleteStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.DeleteStatement@496940b3, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@3d6ebcf0), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@3d6ebcf0)
+2020-12-20 15:18:40.769  INFO 30536 --- [ecutorHandler-5] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: DELETE FROM usd_freeze_account WHERE user_id = ? ::: [1]
+USDAccountDTO operating =>>>>>USDAccountDTO(userId=1, balance=1, deduction=true)
+2020-12-20 15:19:32.844  INFO 30536 --- [:20890-thread-3] ShardingSphere-SQL                       : Logic SQL: SELECT id,user_id,balance FROM usd_account WHERE user_id = ?
+2020-12-20 15:19:32.844  INFO 30536 --- [:20890-thread-3] ShardingSphere-SQL                       : SQLStatement: SelectStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.SelectStatement@4c5cfdf1, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@149c5b2d), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@149c5b2d, projectionsContext=ProjectionsContext(startIndex=7, stopIndex=24, distinctRow=false, projections=[ColumnProjection(owner=null, name=id, alias=Optional.empty), ColumnProjection(owner=null, name=user_id, alias=Optional.empty), ColumnProjection(owner=null, name=balance, alias=Optional.empty)]), groupByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.groupby.GroupByContext@1a5ba7ce, orderByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.orderby.OrderByContext@1e64305d, paginationContext=org.apache.shardingsphere.sql.parser.binder.segment.select.pagination.PaginationContext@5b66adf5, containsSubquery=false)
+2020-12-20 15:19:32.844  INFO 30536 --- [:20890-thread-3] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: SELECT id,user_id,balance FROM usd_account WHERE user_id = ? ::: [1]
+2020-12-20 15:19:32.873  INFO 30536 --- [:20890-thread-3] ShardingSphere-SQL                       : Logic SQL: INSERT INTO usd_freeze_account(`user_id`, `balance`, `account_id`) VALUES(?, ?, ?)
+2020-12-20 15:19:32.873  INFO 30536 --- [:20890-thread-3] ShardingSphere-SQL                       : SQLStatement: InsertStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.InsertStatement@65eae53a, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@36722007), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@36722007, columnNames=[user_id, balance, account_id], insertValueContexts=[InsertValueContext(parametersCount=3, valueExpressions=[ParameterMarkerExpressionSegment(startIndex=74, stopIndex=74, parameterMarkerIndex=0), ParameterMarkerExpressionSegment(startIndex=77, stopIndex=77, parameterMarkerIndex=1), ParameterMarkerExpressionSegment(startIndex=80, stopIndex=80, parameterMarkerIndex=2)], parameters=[1, 1, 1])], generatedKeyContext=Optional.empty)
+2020-12-20 15:19:32.873  INFO 30536 --- [:20890-thread-3] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: INSERT INTO usd_freeze_account(`user_id`, `balance`, `account_id`) VALUES(?, ?, ?) ::: [1, 1, 1]
+USDAccountDTO confirm =>>>>>USDAccountDTO(userId=1, balance=1, deduction=true)
+2020-12-20 15:19:32.881  INFO 30536 --- [ecutorHandler-6] ShardingSphere-SQL                       : Logic SQL: DELETE FROM usd_freeze_account WHERE user_id = ?
+2020-12-20 15:19:32.881  INFO 30536 --- [ecutorHandler-6] ShardingSphere-SQL                       : SQLStatement: DeleteStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.DeleteStatement@496940b3, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@6763f21b), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@6763f21b)
+2020-12-20 15:19:32.881  INFO 30536 --- [ecutorHandler-6] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: DELETE FROM usd_freeze_account WHERE user_id = ? ::: [1]
+RMBAccountDTO operating =>>>>>RMBAccountDTO(userId=1, balance=7, deduction=false)
+2020-12-20 15:19:32.889  INFO 30536 --- [ecutorHandler-6] ShardingSphere-SQL                       : Logic SQL: SELECT id,user_id,balance FROM usd_account WHERE user_id = ?
+2020-12-20 15:19:32.889  INFO 30536 --- [:20890-thread-4] ShardingSphere-SQL                       : Logic SQL: SELECT id,user_id,balance FROM rmb_account WHERE user_id = ?
+2020-12-20 15:19:32.889  INFO 30536 --- [:20890-thread-4] ShardingSphere-SQL                       : SQLStatement: SelectStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.SelectStatement@20570438, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@58a4959d), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@58a4959d, projectionsContext=ProjectionsContext(startIndex=7, stopIndex=24, distinctRow=false, projections=[ColumnProjection(owner=null, name=id, alias=Optional.empty), ColumnProjection(owner=null, name=user_id, alias=Optional.empty), ColumnProjection(owner=null, name=balance, alias=Optional.empty)]), groupByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.groupby.GroupByContext@589ed310, orderByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.orderby.OrderByContext@9a8e345, paginationContext=org.apache.shardingsphere.sql.parser.binder.segment.select.pagination.PaginationContext@1146408c, containsSubquery=false)
+2020-12-20 15:19:32.889  INFO 30536 --- [ecutorHandler-6] ShardingSphere-SQL                       : SQLStatement: SelectStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.SelectStatement@4c5cfdf1, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@6b829fd7), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@6b829fd7, projectionsContext=ProjectionsContext(startIndex=7, stopIndex=24, distinctRow=false, projections=[ColumnProjection(owner=null, name=id, alias=Optional.empty), ColumnProjection(owner=null, name=user_id, alias=Optional.empty), ColumnProjection(owner=null, name=balance, alias=Optional.empty)]), groupByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.groupby.GroupByContext@424e8fdc, orderByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.orderby.OrderByContext@5671f1ad, paginationContext=org.apache.shardingsphere.sql.parser.binder.segment.select.pagination.PaginationContext@f052a88, containsSubquery=false)
+2020-12-20 15:19:32.889  INFO 30536 --- [:20890-thread-4] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: SELECT id,user_id,balance FROM rmb_account WHERE user_id = ? ::: [1]
+2020-12-20 15:19:32.889  INFO 30536 --- [ecutorHandler-6] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: SELECT id,user_id,balance FROM usd_account WHERE user_id = ? ::: [1]
+2020-12-20 15:19:32.896  INFO 30536 --- [:20890-thread-4] ShardingSphere-SQL                       : Logic SQL: INSERT INTO rmb_freeze_account(`user_id`, `balance`, `account_id`) VALUES(?, ?, ?)
+2020-12-20 15:19:32.896  INFO 30536 --- [:20890-thread-4] ShardingSphere-SQL                       : SQLStatement: InsertStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.InsertStatement@7fad9fa5, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@6ad56091), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@6ad56091, columnNames=[user_id, balance, account_id], insertValueContexts=[InsertValueContext(parametersCount=3, valueExpressions=[ParameterMarkerExpressionSegment(startIndex=74, stopIndex=74, parameterMarkerIndex=0), ParameterMarkerExpressionSegment(startIndex=77, stopIndex=77, parameterMarkerIndex=1), ParameterMarkerExpressionSegment(startIndex=80, stopIndex=80, parameterMarkerIndex=2)], parameters=[1, 7, 1])], generatedKeyContext=Optional.empty)
+2020-12-20 15:19:32.896  INFO 30536 --- [:20890-thread-4] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: INSERT INTO rmb_freeze_account(`user_id`, `balance`, `account_id`) VALUES(?, ?, ?) ::: [1, 7, 1]
+2020-12-20 15:19:32.897  INFO 30536 --- [ecutorHandler-6] ShardingSphere-SQL                       : Logic SQL: UPDATE usd_account SET balance = ? WHERE user_id = ?
+2020-12-20 15:19:32.897  INFO 30536 --- [ecutorHandler-6] ShardingSphere-SQL                       : SQLStatement: UpdateStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.UpdateStatement@168917dd, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@189b73e4), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@189b73e4)
+2020-12-20 15:19:32.897  INFO 30536 --- [ecutorHandler-6] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: UPDATE usd_account SET balance = ? WHERE user_id = ? ::: [0.00, 1]
+RMBAccountDTO confirm =>>>>>RMBAccountDTO(userId=1, balance=7, deduction=false)
+2020-12-20 15:19:32.905  INFO 30536 --- [ecutorHandler-7] ShardingSphere-SQL                       : Logic SQL: DELETE FROM rmb_freeze_account WHERE user_id = ?
+2020-12-20 15:19:32.905  INFO 30536 --- [ecutorHandler-7] ShardingSphere-SQL                       : SQLStatement: DeleteStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.DeleteStatement@5aa4604e, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@5463856a), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@5463856a)
+2020-12-20 15:19:32.905  INFO 30536 --- [ecutorHandler-7] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: DELETE FROM rmb_freeze_account WHERE user_id = ? ::: [1]
+2020-12-20 15:19:32.912  INFO 30536 --- [ecutorHandler-7] ShardingSphere-SQL                       : Logic SQL: SELECT id,user_id,balance FROM rmb_account WHERE user_id = ?
+2020-12-20 15:19:32.912  INFO 30536 --- [ecutorHandler-7] ShardingSphere-SQL                       : SQLStatement: SelectStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.SelectStatement@20570438, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@2401bb9b), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@2401bb9b, projectionsContext=ProjectionsContext(startIndex=7, stopIndex=24, distinctRow=false, projections=[ColumnProjection(owner=null, name=id, alias=Optional.empty), ColumnProjection(owner=null, name=user_id, alias=Optional.empty), ColumnProjection(owner=null, name=balance, alias=Optional.empty)]), groupByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.groupby.GroupByContext@14b451de, orderByContext=org.apache.shardingsphere.sql.parser.binder.segment.select.orderby.OrderByContext@7571701e, paginationContext=org.apache.shardingsphere.sql.parser.binder.segment.select.pagination.PaginationContext@1048a90f, containsSubquery=false)
+2020-12-20 15:19:32.912  INFO 30536 --- [ecutorHandler-7] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: SELECT id,user_id,balance FROM rmb_account WHERE user_id = ? ::: [1]
+2020-12-20 15:19:32.917  INFO 30536 --- [ecutorHandler-7] ShardingSphere-SQL                       : Logic SQL: UPDATE rmb_account SET balance = ? WHERE user_id = ?
+2020-12-20 15:19:32.918  INFO 30536 --- [ecutorHandler-7] ShardingSphere-SQL                       : SQLStatement: UpdateStatementContext(super=CommonSQLStatementContext(sqlStatement=org.apache.shardingsphere.sql.parser.sql.statement.dml.UpdateStatement@2c10fd07, tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@71bc5a56), tablesContext=org.apache.shardingsphere.sql.parser.binder.segment.table.TablesContext@71bc5a56)
+2020-12-20 15:19:32.918  INFO 30536 --- [ecutorHandler-7] ShardingSphere-SQL                       : Actual SQL: tcc-1 ::: UPDATE rmb_account SET balance = ? WHERE user_id = ? ::: [7.00, 1]
+~~~
+
+异常情况通过Exception回滚
+~~~
+java.lang.RuntimeException: org.dromara.hmily.common.exception.HmilyRuntimeException: 余额不足
+org.dromara.hmily.common.exception.HmilyRuntimeException: 余额不足
+~~~

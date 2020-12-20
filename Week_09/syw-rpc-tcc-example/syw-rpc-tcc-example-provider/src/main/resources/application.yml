@@ -1,0 +1,52 @@
+server:
+  port: 8901
+
+spring:
+  application:
+    name: syw-rpc-tcc-example-provider
+  shardingsphere:
+    datasource:
+      names: tcc-1,tcc-2
+      tcc-1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3308/tcc_1?useSSL=false
+        username: root
+        password: 123456
+      tcc-2:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3308/tcc_2?useSSL=false
+        username: root
+        password: 123456
+    sharding:
+      tables:
+        rmb_account:
+          actual-data-nodes: tcc-$->{1..2}.rmb_account
+#          table-strategy:
+#            inline:
+#              sharding-column: user_id
+#              algorithm-expression: rmb_account->{id % 2}
+        rmb_freeze_account:
+          actual-data-nodes: tcc-$->{1..2}.rmb_freeze_account
+#          table-strategy:
+#            inline:
+#              sharding-column: user_id
+        usd_account:
+          actual-data-nodes: tcc-$->{1..2}.usd_account
+#          table-strategy:
+#            inline:
+#              sharding-column: user_id
+        usd_freeze_account:
+          actual-data-nodes: tcc-$->{1..2}.usd_freeze_account
+#          table-strategy:
+#            inline:
+#              sharding-column: user_id
+      default-database-strategy:
+        inline:
+          sharding-column: user_id
+          algorithm-expression: tcc-${user_id % 2}
+      binding-tables: rmb_account,rmb_freeze_account,usd_account,usd_freeze_account
+    props:
+      sql:
+        show: true
