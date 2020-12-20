@@ -14,6 +14,8 @@
     <properties>
         <java.version>1.8</java.version>
         <syw.version>1.0-SNAPSHOT</syw.version>
+        <mysql.drive.version>5.1.47</mysql.drive.version>
+        <mybatis.version>2.1.3</mybatis.version>
     </properties>
 
     <dependencies>
@@ -26,12 +28,13 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.drive.version}</version>
         </dependency>
 
         <dependency>

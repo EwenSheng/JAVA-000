@@ -236,7 +236,8 @@ docker start id/name
 [shardingsphere 配置](https://shardingsphere.apache.org/document/legacy/4.x/document/cn/manual/sharding-jdbc/configuration/config-yaml/)
 
 组装这些第三包及其痛苦,另外不知道是不是我的Idea问题,老发生properties update后ss无法读取到数据库type;
-1. spring-boot 2.x 以上使用 shardingshpare-jdbc 4.x 以上版本;
-2. dubbo 2.7.5 以上版本;
-3. zookeeper 最新版本;
+- spring-boot 2.x 以上使用 shardingshpare-jdbc 4.x 以上版本;
+- dubbo 2.7.5 以上版本,zookeeper 最新版本;
 
+
+3. 准备Hmily数据库
