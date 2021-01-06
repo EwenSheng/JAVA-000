@@ -305,6 +305,175 @@ OK
 
 ### cluster 集群
 
+1. 创建属于redis的集群网络
+
+0. 为什么要实现Redis Cluster
+~~~
+1.主从复制不能实现高可用
+2.随着公司发展，用户数量增多，并发越来越多，业务需要更高的QPS，而主从复制中单机的QPS可能无法满足业务需求
+3.数据量的考虑，现有服务器内存不能满足业务数据的需要时，单纯向服务器添加内存不能达到要求，此时需要考虑分布式需求，把数据分布到不同服务器上
+4.网络流量需求：业务的流量已经超过服务器的网卡的上限值，可以考虑使用分布式来进行分流
+5.离线计算，需要中间环节缓冲等别的需求
+~~~
+1. 创建属于redis的集群网络
+~~~
+PS D:\WorkSpaceDocker\Redis\Config> docker network create redis-cluster-net
+022334c8fa752cb1779fdc971b24cc6a5d0e5665f50da8085188ad36da8e97e4
+~~~
+查看网关信息：172.18.0.1
+~~~
+PS D:\WorkSpaceDocker\Redis\Config> docker network inspect redis-cluster-net
+[
+    {
+        "Name": "redis-cluster-net",
+        "Id": "2db328899291110efd2b91aaffc06324d132e7f56dd68e55a0558293b906b53f",
+        "Created": "2021-01-06T09:25:29.0189483Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "Gateway": "172.18.0.1"
+                }
+            ]
+        },
+        ...
+]
+~~~
+2. 创建 7000~7005 端口的Redis配置文件,并且构建Redis镜像
+~~~
+-- 在windows环境下借助GitBash执行脚本
+
+45399@Ewen-Sheng_CP MINGW64 /d/WorkSpaceDocker/Redis/Cluster
+$ bash create.sh
+
+docker run --name redis-7000 --net redis-cluster-net -d -p 7000:7000 -p 17000:17000 -v $PWD/7000/data:/data -v $PWD/7000/redis-7000.conf:/usr/local/etc/redis/redis.conf redis redis-server /usr/local/etc/redis/redis.conf
+docker run --name redis-7001 --net redis-cluster-net -d -p 7001:7001 -p 17001:17001 -v $PWD/7001/data:/data -v $PWD/7001/redis-7001.conf:/usr/local/etc/redis/redis.conf redis redis-server /usr/local/etc/redis/redis.conf
+docker run --name redis-7002 --net redis-cluster-net -d -p 7002:7002 -p 17002:17002 -v $PWD/7002/data:/data -v $PWD/7002/redis-7002.conf:/usr/local/etc/redis/redis.conf redis redis-server /usr/local/etc/redis/redis.conf
+docker run --name redis-7003 --net redis-cluster-net -d -p 7003:7003 -p 17003:17003 -v $PWD/7003/data:/data -v $PWD/7003/redis-7003.conf:/usr/local/etc/redis/redis.conf redis redis-server /usr/local/etc/redis/redis.conf
+docker run --name redis-7004 --net redis-cluster-net -d -p 7004:7004 -p 17004:17004 -v $PWD/7004/data:/data -v $PWD/7004/redis-7004.conf:/usr/local/etc/redis/redis.conf redis redis-server /usr/local/etc/redis/redis.conf
+docker run --name redis-7005 --net redis-cluster-net -d -p 7005:7005 -p 17005:17005 -v $PWD/7005/data:/data -v $PWD/7005/redis-7005.conf:/usr/local/etc/redis/redis.conf redis redis-server /usr/local/etc/redis/redis.conf
+
+-- 确认Redis
+    PS D:\WorkSpaceDocker\Redis\Cluster> docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                                        NAMES
+003e093d548e        redis               "docker-entrypoint.s…"   6 seconds ago       Up 4 seconds        0.0.0.0:7005->7005/tcp, 6379/tcp, 0.0.0.0:17005->17005/tcp   redis-7005
+93b581b1bb04        redis               "docker-entrypoint.s…"   6 seconds ago       Up 5 seconds        0.0.0.0:7004->7004/tcp, 6379/tcp, 0.0.0.0:17004->17004/tcp   redis-7004
+f2fcc5a141f2        redis               "docker-entrypoint.s…"   7 seconds ago       Up 5 seconds        0.0.0.0:7003->7003/tcp, 6379/tcp, 0.0.0.0:17003->17003/tcp   redis-7003
+b6bbea23455b        redis               "docker-entrypoint.s…"   8 seconds ago       Up 6 seconds        0.0.0.0:7002->7002/tcp, 6379/tcp, 0.0.0.0:17002->17002/tcp   redis-7002
+607b3affef97        redis               "docker-entrypoint.s…"   8 seconds ago       Up 7 seconds        0.0.0.0:7001->7001/tcp, 6379/tcp, 0.0.0.0:17001->17001/tcp   redis-7001
+497dccb2382d        redis               "docker-entrypoint.s…"   9 seconds ago       Up 7 seconds        0.0.0.0:7000->7000/tcp, 6379/tcp, 0.0.0.0:17000->17000/tcp   redis-7000
+~~~
+
+3. 构建集群
+~~~
+-- 确认是否开启集群配置
+docker exec -it redis-7000 redis-cli -p 7000 info cluster
+-- 执行结果
+PS D:\WorkSpaceDocker\Redis\Cluster> docker exec -it redis-7000 redis-cli -p 7000 info cluster
+# Cluster
+cluster_enabled:1
+
+通过meet命令将其他实例，连接到集群上
+docker exec -it redis-7000 redis-cli -p 7000 cluster meet 172.18.0.3 7001
+docker exec -it redis-7000 redis-cli -p 7000 cluster meet 172.18.0.4 7002
+docker exec -it redis-7000 redis-cli -p 7000 cluster meet 172.18.0.5 7003
+docker exec -it redis-7000 redis-cli -p 7000 cluster meet 172.18.0.6 7004
+docker exec -it redis-7000 redis-cli -p 7000 cluster meet 172.18.0.7 7005
+
+-- 执行结果
+PS D:\WorkSpaceDocker\Redis\Cluster> docker exec -it redis-7000 redis-cli -p 7000 cluster meet 172.18.0.3 7001
+OK
+PS D:\WorkSpaceDocker\Redis\Cluster> docker exec -it redis-7000 redis-cli -p 7000 cluster meet 172.18.0.4 7002
+OK
+PS D:\WorkSpaceDocker\Redis\Cluster> docker exec -it redis-7000 redis-cli -p 7000 cluster meet 172.18.0.5 7003
+OK
+PS D:\WorkSpaceDocker\Redis\Cluster> docker exec -it redis-7000 redis-cli -p 7000 cluster meet 172.18.0.6 7004
+OK
+PS D:\WorkSpaceDocker\Redis\Cluster> docker exec -it redis-7000 redis-cli -p 7000 cluster meet 172.18.0.7 7005
+OK
+-- 查看集群的节点信息
+docker exec -it redis-7000 redis-cli -p 7000 cluster nodes
+
+49b7e18bee441da09517eead72d21d99307a92ca 172.18.0.6:7004@17004 master - 0 1609932289000 3 connected
+b89b1eae9957d3f41d3cf8ca719c097895bbed8b 172.18.0.5:7003@17003 master - 0 1609932290000 2 connected
+6dcb219fe2f5923e843b11a45086b89fecd55113 172.18.0.7:7005@17005 master - 0 1609932291069 5 connected
+ee511f51eb6dcf532f85748596ddc50d4500cf57 172.18.0.4:7002@17002 master - 0 1609932289063 0 connected
+be76513824184611428ae045fcfac2d557615d68 172.18.0.2:7000@17000 myself,master - 0 1609932290000 1 connected
+5078e74e6030205449ecc8767ab4b3ac9f03098c 172.18.0.3:7001@17001 master - 0 1609932290067 4 connected
+~~~
+
+4. 设置主从结构 3主3从
+~~~
+# 设置7001节点为7000节点的从节点
+docker exec -it redis-7001 redis-cli -p 7001 cluster replicate ebd5e1bdcde72b413466dcb261c766ade7c3cc24 # 7001 --> 7000
+# 设置7003节点为7002节点的从节点
+docker exec -it redis-7003 redis-cli -p 7003 cluster replicate 58600a2a49a3c787309d6528d831dd457a65e121 # 7003 --> 7002
+# 设置7005节点为7004节点的从节点
+docker exec -it redis-7005 redis-cli -p 7005 cluster replicate e99607e64594d5da7065e03e3596d9ddcbd4c919 # 7005 --> 7004
+
+-- 查看节点信息
+docker exec -it redis-7000 redis-cli -p 7000 cluster nodes
+
+9596c04f61832b9e0f810f24dcd64bd03f842031 172.18.0.5:7003@17003 master - 0 1609937506079 31 connected
+ccd4aa1cd19c86eab2eeb041136087d5da6f524d 172.18.0.7:7005@17005 master - 0 1609937504000 39 connected 
+58600a2a49a3c787309d6528d831dd457a65e121 172.18.0.4:7002@17002 master - 0 1609937504074 34 connected
+d88b03704397bbc30f836dc0ce9f00c445c7243b 172.18.0.3:7001@17001 master - 0 1609937507081 37 connected 
+e99607e64594d5da7065e03e3596d9ddcbd4c919 172.18.0.6:7004@17004 master - 0 1609937506000 38 connected
+ebd5e1bdcde72b413466dcb261c766ade7c3cc24 172.18.0.2:7000@17000 myself,master 
+~~~
+
+5. 虚拟槽分区
+~~~
+- redis-cli -h 服务器IP -p 端口号 cluster addslots {0..5460}
+- 通过cluster addslots方式，我们手动的指定每个主节点所分配的槽
+docker exec -it redis-7000 redis-cli -p 7000 cluster addslots {0..5460}
+docker exec -it redis-7002 redis-cli -p 7002 cluster addslots {5461..10920}
+docker exec -it redis-7004 redis-cli -p 7004 cluster addslots {10921..16383}
+
+docker exec -it redis-7000 redis-cli --cluster fix 172.18.0.2:7000
+
+-- 移除节点下所有槽
+docker exec -it redis-7000 redis-cli -p 7000 CLUSTER FLUSHSLOTS
+docker exec -it redis-7001 redis-cli -p 7001 CLUSTER FLUSHSLOTS
+docker exec -it redis-7002 redis-cli -p 7002 CLUSTER FLUSHSLOTS
+docker exec -it redis-7003 redis-cli -p 7003 CLUSTER FLUSHSLOTS
+docker exec -it redis-7004 redis-cli -p 7004 CLUSTER FLUSHSLOTS
+docker exec -it redis-7005 redis-cli -p 7005 CLUSTER FLUSHSLOTS
+~~~
+
+6. 查询槽信息
+~~~
+127.0.0.1:7000> cluster slots
+
+...
+4685) 1) (integer) 16323
+      2) (integer) 16323
+      3) 1) "172.18.0.3"
+         2) (integer) 7001
+         3) "d88b03704397bbc30f836dc0ce9f00c445c7243b"
+4686) 1) (integer) 16349
+      2) (integer) 16349
+      3) 1) "172.18.0.3"
+         2) (integer) 7001
+         3) "d88b03704397bbc30f836dc0ce9f00c445c7243b"
+4687) 1) (integer) 16354
+      2) (integer) 16354
+      3) 1) "172.18.0.3"
+         2) (integer) 7001
+         3) "d88b03704397bbc30f836dc0ce9f00c445c7243b"
+4688) 1) (integer) 16361
+      2) (integer) 16361
+      3) 1) "172.18.0.3"
+         2) (integer) 7001
+         3) "d88b03704397bbc30f836dc0ce9f00c445c7243b"
+...
+~~~
+
 
 ~~~
 命令说明：
