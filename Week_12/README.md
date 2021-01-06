@@ -361,12 +361,12 @@ docker run --name redis-7005 --net redis-cluster-net -d -p 7005:7005 -p 17005:17
 -- 确认Redis
     PS D:\WorkSpaceDocker\Redis\Cluster> docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                                        NAMES
-003e093d548e        redis               "docker-entrypoint.s…"   6 seconds ago       Up 4 seconds        0.0.0.0:7005->7005/tcp, 6379/tcp, 0.0.0.0:17005->17005/tcp   redis-7005
-93b581b1bb04        redis               "docker-entrypoint.s…"   6 seconds ago       Up 5 seconds        0.0.0.0:7004->7004/tcp, 6379/tcp, 0.0.0.0:17004->17004/tcp   redis-7004
-f2fcc5a141f2        redis               "docker-entrypoint.s…"   7 seconds ago       Up 5 seconds        0.0.0.0:7003->7003/tcp, 6379/tcp, 0.0.0.0:17003->17003/tcp   redis-7003
-b6bbea23455b        redis               "docker-entrypoint.s…"   8 seconds ago       Up 6 seconds        0.0.0.0:7002->7002/tcp, 6379/tcp, 0.0.0.0:17002->17002/tcp   redis-7002
-607b3affef97        redis               "docker-entrypoint.s…"   8 seconds ago       Up 7 seconds        0.0.0.0:7001->7001/tcp, 6379/tcp, 0.0.0.0:17001->17001/tcp   redis-7001
-497dccb2382d        redis               "docker-entrypoint.s…"   9 seconds ago       Up 7 seconds        0.0.0.0:7000->7000/tcp, 6379/tcp, 0.0.0.0:17000->17000/tcp   redis-7000
+a9598956fe4d        redis               "docker-entrypoint.s…"   43 seconds ago      Up 42 seconds       0.0.0.0:7005->7005/tcp, 6379/tcp, 0.0.0.0:17005->17005/tcp   redis-7005
+e7126b742d6a        redis               "docker-entrypoint.s…"   46 seconds ago      Up 45 seconds       0.0.0.0:7004->7004/tcp, 6379/tcp, 0.0.0.0:17004->17004/tcp   redis-7004
+c66de158aaff        redis               "docker-entrypoint.s…"   49 seconds ago      Up 47 seconds       0.0.0.0:7003->7003/tcp, 6379/tcp, 0.0.0.0:17003->17003/tcp   redis-7003
+062c811cdfc3        redis               "docker-entrypoint.s…"   52 seconds ago      Up 50 seconds       0.0.0.0:7002->7002/tcp, 6379/tcp, 0.0.0.0:17002->17002/tcp   redis-7002
+6e8a06f21c91        redis               "docker-entrypoint.s…"   54 seconds ago      Up 53 seconds       0.0.0.0:7001->7001/tcp, 6379/tcp, 0.0.0.0:17001->17001/tcp   redis-7001
+6d47e656d141        redis               "docker-entrypoint.s…"   57 seconds ago      Up 55 seconds       0.0.0.0:7000->7000/tcp, 6379/tcp, 0.0.0.0:17000->17000/tcp   redis-7000
 ~~~
 
 3. 构建集群
@@ -399,12 +399,12 @@ OK
 -- 查看集群的节点信息
 docker exec -it redis-7000 redis-cli -p 7000 cluster nodes
 
-49b7e18bee441da09517eead72d21d99307a92ca 172.18.0.6:7004@17004 master - 0 1609932289000 3 connected
-b89b1eae9957d3f41d3cf8ca719c097895bbed8b 172.18.0.5:7003@17003 master - 0 1609932290000 2 connected
-6dcb219fe2f5923e843b11a45086b89fecd55113 172.18.0.7:7005@17005 master - 0 1609932291069 5 connected
-ee511f51eb6dcf532f85748596ddc50d4500cf57 172.18.0.4:7002@17002 master - 0 1609932289063 0 connected
-be76513824184611428ae045fcfac2d557615d68 172.18.0.2:7000@17000 myself,master - 0 1609932290000 1 connected
-5078e74e6030205449ecc8767ab4b3ac9f03098c 172.18.0.3:7001@17001 master - 0 1609932290067 4 connected
+e99607e64594d5da7065e03e3596d9ddcbd4c919 172.18.0.6:7004@17004 master - 0 1609932289000 3 connected
+9596c04f61832b9e0f810f24dcd64bd03f842031 172.18.0.5:7003@17003 master - 0 1609932290000 2 connected
+ccd4aa1cd19c86eab2eeb041136087d5da6f524d 172.18.0.7:7005@17005 master - 0 1609932291069 5 connected
+58600a2a49a3c787309d6528d831dd457a65e121 172.18.0.4:7002@17002 master - 0 1609932289063 0 connected
+ebd5e1bdcde72b413466dcb261c766ade7c3cc24 172.18.0.2:7000@17000 myself,master - 0 1609932290000 1 connected
+d88b03704397bbc30f836dc0ce9f00c445c7243b 172.18.0.3:7001@17001 master - 0 1609932290067 4 connected
 ~~~
 
 4. 设置主从结构 3主3从
@@ -419,12 +419,13 @@ docker exec -it redis-7005 redis-cli -p 7005 cluster replicate e99607e64594d5da7
 -- 查看节点信息
 docker exec -it redis-7000 redis-cli -p 7000 cluster nodes
 
-9596c04f61832b9e0f810f24dcd64bd03f842031 172.18.0.5:7003@17003 master - 0 1609937506079 31 connected
-ccd4aa1cd19c86eab2eeb041136087d5da6f524d 172.18.0.7:7005@17005 master - 0 1609937504000 39 connected 
-58600a2a49a3c787309d6528d831dd457a65e121 172.18.0.4:7002@17002 master - 0 1609937504074 34 connected
-d88b03704397bbc30f836dc0ce9f00c445c7243b 172.18.0.3:7001@17001 master - 0 1609937507081 37 connected 
-e99607e64594d5da7065e03e3596d9ddcbd4c919 172.18.0.6:7004@17004 master - 0 1609937506000 38 connected
-ebd5e1bdcde72b413466dcb261c766ade7c3cc24 172.18.0.2:7000@17000 myself,master 
+PS D:\WorkSpaceDocker\Redis\Cluster> docker exec -it redis-7000 redis-cli -p 7000 cluster nodes
+d88b03704397bbc30f836dc0ce9f00c445c7243b 172.18.0.3:7001@17001 slave ebd5e1bdcde72b413466dcb261c766ade7c3cc24 0 1609939392000 40 connected
+9596c04f61832b9e0f810f24dcd64bd03f842031 172.18.0.5:7003@17003 slave 58600a2a49a3c787309d6528d831dd457a65e121 0 1609939390972 34 connected
+58600a2a49a3c787309d6528d831dd457a65e121 172.18.0.4:7002@17002 master - 0 1609939392981 34 connected
+ebd5e1bdcde72b413466dcb261c766ade7c3cc24 172.18.0.2:7000@17000 myself,master - 0 1609939389000 40 connected
+ccd4aa1cd19c86eab2eeb041136087d5da6f524d 172.18.0.7:7005@17005 slave e99607e64594d5da7065e03e3596d9ddcbd4c919 0 1609939390000 38 connected
+e99607e64594d5da7065e03e3596d9ddcbd4c919 172.18.0.6:7004@17004 master - 0 1609939391000 38 connected
 ~~~
 
 5. 虚拟槽分区
@@ -474,6 +475,45 @@ docker exec -it redis-7005 redis-cli -p 7005 CLUSTER FLUSHSLOTS
 ...
 ~~~
 
+~~~
+(error) CLUSTERDOWN Hash slot not served
+
+
+D:\WorkSpaceDocker\Redis\Cluster>docker exec -it redis-7000 redis-cli --cluster fix 172.18.0.2:7000
+172.18.0.2:7000 (ebd5e1bd...) -> 0 keys | 5137 slots | 1 slaves.
+172.18.0.4:7002 (58600a2a...) -> 0 keys | 0 slots | 1 slaves.
+172.18.0.6:7004 (e99607e6...) -> 0 keys | 0 slots | 1 slaves.
+[OK] 0 keys in 3 masters.
+0.00 keys per slot on average.
+>>> Performing Cluster Check (using node 172.18.0.2:7000)
+M: ebd5e1bdcde72b413466dcb261c766ade7c3cc24 172.18.0.2:7000
+   slots:[0-1036],[1361-5460] (5137 slots) master
+   1 additional replica(s)
+S: d88b03704397bbc30f836dc0ce9f00c445c7243b 172.18.0.3:7001
+   slots: (0 slots) slave
+   replicates ebd5e1bdcde72b413466dcb261c766ade7c3cc24
+S: 9596c04f61832b9e0f810f24dcd64bd03f842031 172.18.0.5:7003
+   slots: (0 slots) slave
+   replicates 58600a2a49a3c787309d6528d831dd457a65e121
+M: 58600a2a49a3c787309d6528d831dd457a65e121 172.18.0.4:7002
+   slots: (0 slots) master
+   1 additional replica(s)
+S: ccd4aa1cd19c86eab2eeb041136087d5da6f524d 172.18.0.7:7005
+   slots: (0 slots) slave
+   replicates e99607e64594d5da7065e03e3596d9ddcbd4c919
+M: e99607e64594d5da7065e03e3596d9ddcbd4c919 172.18.0.6:7004
+   slots: (0 slots) master
+   1 additional replica(s)
+[ERR] Nodes don't agree about configuration!
+>>> Check for open slots...
+>>> Check slots coverage...
+[ERR] Not all 16384 slots are covered by nodes.
+
+>>> Fixing slots coverage...
+The following uncovered slots have no keys across the cluster:
+[1037-1360],[5461-16383]
+
+~~~
 
 ~~~
 命令说明：
