@@ -1,0 +1,13 @@
+server:
+  port: 13001
+
+spring:
+  activemq:
+    broker-url: tcp://127.0.0.1:61617
+    user: admin
+    password: admin
+    in-memory: true
+  jms:
+    pub-sub-domain: true # \u5F00\u542FTopic\u6A21\u5F0F
+#    pool:
+#      enabled: false
