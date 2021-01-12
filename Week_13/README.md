@@ -338,8 +338,8 @@ hello kafka group
 
 4. 通过spring-kafka 构建Producer端/Consumer端 结果:
 
-Producer端: [项目地址](链接地址)
-Consumer端: [项目地址](链接地址)
+Producer端: [项目地址](https://github.com/EwenSheng/JAVA-000/tree/main/Week_13/syw-kafka-demo)
+Consumer端: [项目地址](https://github.com/EwenSheng/JAVA-000/tree/main/Week_13/syw-kafka-consumer)
 
 ~~~
 POST http://localhost:13001/test/send
