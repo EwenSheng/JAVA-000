@@ -1,0 +1,11 @@
+server:
+  port: 13001
+
+spring:
+  kafka:
+    bootstrap-servers: http://10.51.4.183:9092,http://10.51.4.183:9093,http://10.51.4.183:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  application:
+    name: kafka-demo
