@@ -65,7 +65,30 @@ gateway-server-0.0.1-SNAPSHOT.jar -- 测试服务 端口8088
 Google Chrome
 Docker version 19.03.13
 ```
+
 ## 解题
 
-### version 2.0 
-项目地址: [点击]()
+### version 2.0 -- 已完成
+
+#### 设计思路:
+
+1. 先替换队列,把BlockingQueue换成数组;
+2. 思考producer入队,在数组通过一个变量rear记录消息写入位置,并且定义了offer(T t)入队方法
+3. 思考consumer,如何让多个consumer同时消费队列里的数据,并记录消费的位置(K,V 结构适合存储),参考Kafka设计并不是MQ本身记录的, 而是消费者自己记录自己要消费哪段的
+   - 修改Queue只保留出队的行为,把记录位置交付给consumer本身去记录
+   - 修改Consumer,通过ConcurrentHashMap+AtomicInteger记录每个Consumer-Id对应的消费位置
+   - 简单实现了一个确认机制, 先获取上一次消费位置 => 随后拉取Message => 最后判断如果消费不为空则更新下标位置,这样的话在同一个事务内, 如果处理抛出异常则不变更消费位置
+4. 新增MainExample测试
+   - producerClient() 模拟生产者
+   - consumerClient() 模拟消费者, 同时使用线程,开启2个线程执行同步消费,且互相不影响
+
+#### 实现代码:
+[点击](https://github.com/EwenSheng/JAVA-000/tree/main/Week_14/syw-mq)
+
+#### 思考
+
+1. producer并未实现同步/异步机制,如何保证消息一定发布成功
+2. consumer未实现消息位置持久化,若程序关闭或异常终止则消息位置就会丢失
+3. 内存中的队列随时会OOM,如何让数据真正的出队,循环队列？
+
+### version 3.0
