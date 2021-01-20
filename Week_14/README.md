@@ -91,4 +91,14 @@ Docker version 19.03.13
 2. consumer未实现消息位置持久化,若程序关闭或异常终止则消息位置就会丢失
 3. 内存中的队列随时会OOM,如何让数据真正的出队,循环队列？
 
-### version 3.0
+### version 3.0 -- 设计ing
+
+#### 设计思路:
+
+1. 新建broker-server项目,迁移v2.server包下的代码移植到该项目内,拟态消息服务
+2. 新建producer-client项目,迁移v2.producer包下的代码移植到该项目内,拟态"生产者"
+   - 通过RestTemplate调用新建broker-server项目create接口,创建Topic
+   - 通过RestTemplate调用新建broker-server项目的send接口生产消息
+3. 新建consumer-client项目,迁移v2.consumer包下的代码移植到该项目内,拟态“消费者”
+   - 通过RestTemplate调用新建broker-server项目sub接口,订阅Topic
+   - 通过RestTemplate调用新建broker-server项目的poll接口消费消息   
