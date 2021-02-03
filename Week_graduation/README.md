@@ -39,7 +39,9 @@ Google Chrome
 Docker version 19.03.13
 ```
 ### 作业
-[脑图链接](https://kdocs.cn/l/svWkUGcwytjF)
+[脑图链接](https://github.com/EwenSheng/JAVA-000/blob/main/Week_graduation/static/img/%E7%9B%9B%E9%80%B8%E6%96%87-Java-%E7%AC%94%E8%AE%B0%E8%84%91%E5%9B%BE.png)
+
+[若图挂则点击在线脑图](https://kdocs.cn/l/svWkUGcwytjF)
 
 ## 毕业总结
 
